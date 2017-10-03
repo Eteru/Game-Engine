@@ -15,14 +15,14 @@ int main(int argc, char *args[])
 	Display display(800, 600, "OpenGL Window");
 
 	std::vector<Vertex> vertices = {
-		Vertex(glm::vec3(-0.5f, -0.5f, 0.0f)),
-		Vertex(glm::vec3(0.0f, 0.5f, 0.0f)),
-		Vertex(glm::vec3(0.5f, -0.5f, 0.0f))
+		Vertex(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0.0f,0.0f)),
+		Vertex(glm::vec3(0.0f, 0.5f, 0.0f), glm::vec2(0.5f,1.0f)),
+		Vertex(glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(1.0f,0.0f))
 	};
 
 	Mesh mesh(vertices);
 	Shader shader("./res/shader");
-	Texture tex("D:\\_projects\\Game-Engine\\GameEngine\\res\\tex.jpg");
+	Texture tex("D:\\projects\\Game-Engine\\GameEngine\\res\\bricks.jpg");
 
 	while (false == display.IsWindowClosed()) {
 		display.Clear(0.15f, 0.15f, 0.f, 1.f);

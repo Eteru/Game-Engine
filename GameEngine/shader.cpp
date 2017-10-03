@@ -18,6 +18,7 @@ Shader::Shader(const std::string & filename)
 	}
 
 	glBindAttribLocation(m_program, 0, "position");
+	glBindAttribLocation(m_program, 1, "texCoords");
 
 	// Link the program
 	glLinkProgram(m_program);

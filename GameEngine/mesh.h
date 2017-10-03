@@ -7,10 +7,11 @@
 struct Vertex
 {
 	glm::vec3 position;
+	glm::vec2 texCoord;
 
-	Vertex(glm::vec3 pos)
+	Vertex(glm::vec3 pos, glm::vec2 texPos)
+		: position(pos), texCoord(texPos)
 	{
-		position = pos;
 	}
 };
 
@@ -23,9 +24,9 @@ public:
 	void Draw(void);
 
 private:
-	enum BUFFER_TYPE { POSITION_VB = 0, NUM_BUFFERS};
+	enum BUFFER_TYPE { POSITION_VB = 0, TEXCOORD_VB, NUM_BUFFERS};
 	GLuint m_vao; // Vertex Array Object
-	GLuint m_vbos[NUM_BUFFERS]; // Vertex Buffer Objects
+	GLuint m_vbo; // Vertex Buffer Objects
 	
 	uint32_t m_drawCount;
 };

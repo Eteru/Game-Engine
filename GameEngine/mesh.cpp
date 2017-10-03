@@ -8,20 +8,24 @@ Mesh::Mesh(std::vector<Vertex> & vertices)
 	glBindVertexArray(m_vao);
 
 	// Create and intiialize data buffers
-	glGenBuffers(NUM_BUFFERS, m_vbos);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vbos[POSITION_VB]);
+	glGenBuffers(1, &m_vbo);
+
+	// Data buffer
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-	// Positions buffer
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	// Position = 0, Texture coordinates = 1;
+	glEnableVertexAttribArray(POSITION_VB);
+	glEnableVertexAttribArray(TEXCOORD_VB);
+	glVertexAttribPointer(POSITION_VB, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+	glVertexAttribPointer(TEXCOORD_VB, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(sizeof(glm::vec3)));
 
 	glBindVertexArray(0);
 }
 
 Mesh::~Mesh()
 {
-	glDeleteBuffers(NUM_BUFFERS, m_vbos);
+	glDeleteBuffers(1, &m_vbo);
 	glDeleteVertexArrays(1, &m_vao);
 }
 
