@@ -13,6 +13,15 @@ public:
 	void Update(void);
 	bool IsWindowClosed(void);
 
+	inline float GetDisplayRatio(void) const
+	{
+		int w, h;
+		
+		SDL_GetWindowSize(m_window, &w, &h);
+
+		return static_cast<float>(w) / h;
+	}
+
 private:
 	SDL_Window *m_window;
 	SDL_GLContext m_glContext;

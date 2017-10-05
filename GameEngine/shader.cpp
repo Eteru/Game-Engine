@@ -19,6 +19,7 @@ Shader::Shader(const std::string & filename)
 
 	glBindAttribLocation(m_program, 0, "position");
 	glBindAttribLocation(m_program, 1, "texCoords");
+	glBindAttribLocation(m_program, 2, "normal");
 
 	// Link the program
 	glLinkProgram(m_program);
@@ -27,6 +28,8 @@ Shader::Shader(const std::string & filename)
 	// Validate the program
 	glValidateProgram(m_program);
 	CheckShaderError(m_program, GL_VALIDATE_STATUS, true, "[Program]: is invallid.");
+
+	m_uniforms[TRANSFORM_U] = glGetUniformLocation(m_program, "transform");
 }
 
 Shader::~Shader()
@@ -43,6 +46,13 @@ Shader::~Shader()
 void Shader::Bind(void)
 {
 	glUseProgram(m_program);
+}
+
+void Shader::Update(const Transform & transform, const Camera & camera)
+{
+	glm::mat4 MVP = camera.GetViewProjection() *  transform.GetModel();
+
+	glUniformMatrix4fv(m_uniforms[TRANSFORM_U], 1, GL_FALSE, &MVP[0][0]);
 }
 
 std::string Shader::LoadShader(const std::string& filename)
