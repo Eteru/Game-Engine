@@ -32,16 +32,18 @@ Mesh::~Mesh()
 
 void Mesh::Draw(void)
 {
+	m_texture.Bind(0);
+
 	glBindVertexArray(m_vao);
 
-	glDrawElements(GL_TRIANGLES, m_drawCount, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, m_indices_count, GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
 }
 
 void Mesh::InitMesh(const IndexedModel & model)
 {
-	m_drawCount = model.indices.size();
+	m_indices_count = model.indices.size();
 
 	glGenVertexArrays(1, &m_vao);
 	glBindVertexArray(m_vao);

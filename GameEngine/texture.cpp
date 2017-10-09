@@ -4,6 +4,10 @@
 
 #include <iostream>
 
+Texture::Texture()
+{
+}
+
 Texture::Texture(const std::string & filename)
 {
 	int width, height, compCount;

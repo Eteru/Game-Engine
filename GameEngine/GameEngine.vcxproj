@@ -120,7 +120,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="display.cpp" />
+    <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="obj_loader.cpp" />
@@ -130,7 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
-    <ClInclude Include="display.h" />
+    <ClInclude Include="gamemanager.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="obj_loader.h" />
     <ClInclude Include="shader.h" />

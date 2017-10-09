@@ -3,11 +3,13 @@
 #include <string>
 #include <SDL2\SDL.h>
 
-class Display
+#include "camera.h"
+
+class GameManager
 {
 public:
-	Display(int width, int height, const std::string & title);
-	virtual ~Display();
+	GameManager(int width, int height, const std::string & title);
+	virtual ~GameManager();
 
 	void Clear(float r, float g, float b, float a);
 	void Update(void);
@@ -22,10 +24,19 @@ public:
 		return static_cast<float>(w) / h;
 	}
 
+	inline void SetCamera(const Camera & camera)
+	{
+		m_camera = camera;
+	}
+
 private:
+	void ParseKeyPress(SDL_Keysym key);
+
 	SDL_Window *m_window;
 	SDL_GLContext m_glContext;
 
 	bool m_windowClosed;
+
+	Camera m_camera;
 };
 
