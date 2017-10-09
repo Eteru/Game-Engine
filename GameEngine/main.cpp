@@ -25,6 +25,7 @@ int main(int argc, char *args[])
 	std::vector<uint32_t> indices = { 0, 1, 2 };
 
 	Mesh mesh("./res/monkey.obj");
+	//Mesh mesh(vertices, indices);
 	Shader shader("./res/shader");
 	Texture tex("./res/bricks.jpg");
 	Camera camera(glm::vec3(0, 0, -3), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0), 70.f, display.GetDisplayRatio(), 0.01f, 1000.f);
