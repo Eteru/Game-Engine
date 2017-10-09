@@ -17,7 +17,20 @@ public:
 
 private:
 	enum SHADER_TYPE { VERTEX_SHADER = 0, FRAGMENT_SHADER, NUM_SHADERS };
-	enum UNIFORMS { TRANSFORM_U = 0, NUM_UNIFORMS };
+	enum UNIFORMS {
+		MODEL_U = 0,
+		VIEW_PROJECTION_U,
+		NORMAL_MATRIX_U,
+		LIGHT_DIR_U,
+		CAMERA_POSITION_U,
+		LIGHT_AMBIENTAL_U,
+		LIGHT_DIFFUSE_U,
+		LIGHT_SPECULAR_U,
+		MATERIAL_AMBIENTAL_U,
+		MATERIAL_DIFFUSE_U,
+		MATERIAL_SPECULAR_U,
+		MATERIAL_SHINE_U,
+		NUM_UNIFORMS };
 	
 	std::string LoadShader(const std::string & filename);
 	GLuint CreateShader(const std::string & code, GLenum shaderType);

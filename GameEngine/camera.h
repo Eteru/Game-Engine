@@ -17,24 +17,29 @@ public:
 	{
 	}
 
-	inline glm::vec3 & GetPosition()
+	inline glm::vec3 GetPosition(void) const
 	{
 		return m_position;
 	}
 
-	inline glm::vec3 & GetForward()
+	inline glm::vec3 GetForward(void) const
 	{
 		return m_forward;
 	}
 
-	inline glm::vec3 & GetUp()
+	inline glm::vec3 GetUp(void) const
 	{
 		return m_up;
 	}
 
-	inline glm::mat4 GetViewProjection() const
+	inline glm::mat4 GetViewProjection(void) const
 	{
 		return m_perspective * glm::lookAt(m_position, m_position + m_forward, m_up);
+	}
+
+	inline glm::mat4 GetViewMatrix(void) const
+	{
+		return glm::lookAt(m_position, m_position + m_forward, m_up);
 	}
 
 private:
