@@ -22,7 +22,7 @@ uniform float u_materialShine;
 // returns intensity of reflected ambient lighting
 vec3 AmbientLighting()
 {
-   return u_materialA * u_lightA;
+   return clamp(u_materialA * u_lightA, 0, 1);
 }
 
 // returns intensity of diffuse reflection
@@ -30,7 +30,7 @@ vec3 DiffuseLighting(in vec3 N, in vec3 L)
 {
    // calculation as for Lambertian reflection
    float diffuseTerm = clamp(dot(N, L), 0, 1) ;
-   return u_materialD * u_lightD * diffuseTerm;
+   return clamp(u_materialD * u_lightD * diffuseTerm, 0, 1);
 }
 
 // returns intensity of specular reflection
@@ -46,7 +46,7 @@ vec3 SpecularLighting(in vec3 N, in vec3 L, in vec3 V)
       vec3 H = normalize(L + V);
       specularTerm = pow(dot(N, H), u_materialShine);
    }
-   return u_materialS * u_lightS * specularTerm;
+   return clamp(u_materialS * u_lightS * specularTerm, 0, 1);
 }
 
 void main()

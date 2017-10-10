@@ -27,7 +27,7 @@ int main(int argc, char *args[])
 	Mesh mesh("./res/monkey3.obj");
 	Shader shader("./res/shader");
 	Texture tex("./res/bricks.jpg");
-	Camera camera(glm::vec3(0, 0, -3), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0), 70.f, manager.GetDisplayRatio(), 0.01f, 1000.f);
+	Camera camera(glm::vec3(0, 0, -30), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0), 70.f, manager.GetDisplayRatio(), 0.01f, 1000.f);
 	Transform transform;
 
 	float angle = 0.0f;

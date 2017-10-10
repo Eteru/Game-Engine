@@ -78,23 +78,24 @@ bool GameManager::IsWindowClosed(void)
 
 void GameManager::ParseKeyPress(SDL_Keysym key)
 {
-	std::cout << "Pressed ";
 	switch (key.sym)
 	{
 	case SDLK_a:
-		std::cout << "a" << std::endl;
+		m_camera->MoveLeft();
 		break;
 	case SDLK_d:
-		std::cout << "d" << std::endl;
+		m_camera->MoveRight();
 		break;
 	case SDLK_w:
-		std::cout << "w" << std::endl;
+		m_camera->MoveForward();
 		break;
 	case SDLK_s:
-		std::cout << "s" << std::endl;
+		m_camera->MoveBackwards();
+		break;
+	case SDLK_ESCAPE:
+		m_windowClosed = true;
 		break;
 	default:
-		std::cout << "nothing relevant" << std::endl;
 		break;
 	}
 }

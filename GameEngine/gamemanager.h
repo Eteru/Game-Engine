@@ -24,9 +24,9 @@ public:
 		return static_cast<float>(w) / h;
 	}
 
-	inline void SetCamera(const Camera & camera)
+	inline void SetCamera(Camera & camera)
 	{
-		m_camera = camera;
+		m_camera = &camera;
 	}
 
 private:
@@ -37,6 +37,6 @@ private:
 
 	bool m_windowClosed;
 
-	Camera m_camera;
+	Camera *m_camera;
 };
 

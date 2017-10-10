@@ -36,12 +36,4 @@ void main()
 
 	// screen space coordinates of the vertex
 	gl_Position = u_viewProjection * worldPosition;
-
-	// this is the rest
-	// gl_Position = u_transform * vec4(i_position, 1.0);
-
-	// v_texCoords = i_texCoords;
-	// last argument does translation
-	// it is not needed for normals
-	// v_normal = (u_transform * vec4(i_normal, 0.0)).xyz;
 }
