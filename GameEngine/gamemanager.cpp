@@ -9,6 +9,9 @@ GameManager::GameManager(int width, int height, const std::string & title)
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
 
+	// Record mouse movement
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
@@ -34,6 +37,11 @@ GameManager::GameManager(int width, int height, const std::string & title)
 	// Cull back faces
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+
+	// Set full screen
+	//SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
+
+	m_shader = new Shader("./res/shader");
 }
 
 GameManager::~GameManager()
@@ -41,6 +49,8 @@ GameManager::~GameManager()
 	SDL_GL_DeleteContext(m_glContext);
 	SDL_DestroyWindow(m_window);
 	SDL_Quit();
+
+	delete m_shader;
 }
 
 void GameManager::Clear(float r, float g, float b, float a)
@@ -49,25 +59,38 @@ void GameManager::Clear(float r, float g, float b, float a)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void GameManager::Update(void)
+void GameManager::Run(void)
 {
-	SDL_GL_SwapWindow(m_window);
+	while (false == m_windowClosed) {
+		Clear(0.15f, 0.15f, 0.f, 1.f);
+		
+		for (Mesh *m : m_meshes) {
+			m_shader->Bind();
+			m_shader->Update(m->GetTransform(), *m_camera);
+			m->Draw();
+		}		
 
-	SDL_Event e;
+		SDL_Event e;
 
-	while (SDL_PollEvent(&e)) {
+		while (SDL_PollEvent(&e)) {
 
-		switch (e.type)
-		{
-		case SDL_KEYDOWN:
-			ParseKeyPress(e.key.keysym);
-			break;
-		case SDL_QUIT:
-			m_windowClosed = true;
-			break;
-		default:
-			break;
+			switch (e.type)
+			{
+			case SDL_KEYDOWN:
+				ParseKeyPress(e.key.keysym);
+				break;
+			case SDL_MOUSEMOTION:
+				m_camera->Rotate(-e.motion.xrel, e.motion.yrel);
+				break;
+			case SDL_QUIT:
+				m_windowClosed = true;
+				break;
+			default:
+				break;
+			}
 		}
+
+		SDL_GL_SwapWindow(m_window);
 	}
 }
 

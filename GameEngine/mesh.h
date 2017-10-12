@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "texture.h"
+#include "transform.h"
 #include "obj_loader.h"
 
 struct Vertex
@@ -24,6 +25,7 @@ class Mesh
 public:
 	Mesh(std::vector<Vertex> & vertices, std::vector<uint32_t> & indices);
 	Mesh(const std::string & filename);
+	Mesh(const Mesh &obj);
 	virtual ~Mesh();
 
 	inline void SetDiffuseMaterial(GLfloat color[3])
@@ -65,12 +67,20 @@ public:
 		m_texture = texture;
 	}
 
+	inline Transform & GetTransform()
+	{
+		return m_transform;
+	}
+
 	void Draw(void);
 
 private:
 	enum BUFFER_TYPE { POSITION_VB = 0, TEXCOORD_VB, NORMAL_VB, INDEX_VB, NUM_BUFFERS};
 
 	void InitMesh(const IndexedModel & model);
+
+	std::vector<Vertex> m_vertices;
+	Transform m_transform;
 
 	GLuint m_vao; // Vertex Array Object
 	GLuint m_vbo[NUM_BUFFERS]; // Vertex Buffer Objects

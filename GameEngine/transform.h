@@ -13,6 +13,13 @@ public:
 	{
 	}
 
+	Transform(const Transform& obj)
+	{
+		m_pos = obj.m_pos;
+		m_rot = obj.m_rot;
+		m_scale = obj.m_scale;
+	}
+
 	virtual ~Transform()
 	{
 	}

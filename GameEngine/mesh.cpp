@@ -24,6 +24,30 @@ Mesh::Mesh(const std::string & filename)
 	InitMesh(model);
 }
 
+Mesh::Mesh(const Mesh & obj)
+{
+	m_vertices = obj.m_vertices;
+	m_transform = obj.m_transform;
+
+	m_vao = obj.m_vao;
+
+	for (int i = 0; i < NUM_BUFFERS; ++i) {
+		m_vbo[i] = obj.m_vbo[i];
+	}
+	
+	m_indices_count = obj.m_indices_count;
+
+	for (int i = 0; i < 3; ++i) {
+		m_diffuse_material[i] = obj.m_diffuse_material[i];
+		m_specular_material[i] = obj.m_specular_material[i];
+		m_emissive_material[i] = obj.m_emissive_material[i];
+	}
+
+	m_shininess = obj.m_shininess;
+
+	m_texture = obj.m_texture;
+}
+
 Mesh::~Mesh()
 {
 	glDeleteBuffers(NUM_BUFFERS, m_vbo);

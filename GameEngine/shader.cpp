@@ -74,7 +74,7 @@ void Shader::Update(const Transform & transform, const Camera & camera)
 
 	glm::vec3 u_lightAmbientIntensitys = glm::vec3(0.6,0.3,0);
 	glm::vec3 u_lightDiffuseIntensitys = glm::vec3(1, 0.5, 0);
-	glm::vec3 u_lightSpecularIntensitys = glm::vec3(0, 1, 0);
+	glm::vec3 u_lightSpecularIntensitys = glm::vec3(1, 1, 0);
 
 	glm::vec3 u_matAmbientReflectances = glm::vec3(1, 1, 1);
 	glm::vec3 u_matDiffuseReflectances = glm::vec3(1, 1, 1);

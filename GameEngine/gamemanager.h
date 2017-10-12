@@ -1,9 +1,13 @@
+
 #pragma once
 
 #include <string>
+#include <vector>
 #include <SDL2\SDL.h>
 
+#include "mesh.h"
 #include "camera.h"
+#include "shader.h"
 
 class GameManager
 {
@@ -12,7 +16,7 @@ public:
 	virtual ~GameManager();
 
 	void Clear(float r, float g, float b, float a);
-	void Update(void);
+	void Run(void);
 	bool IsWindowClosed(void);
 
 	inline float GetDisplayRatio(void) const
@@ -29,6 +33,11 @@ public:
 		m_camera = &camera;
 	}
 
+	inline void AddMesh(Mesh & mesh)
+	{
+		m_meshes.push_back(&mesh);
+	}
+
 private:
 	void ParseKeyPress(SDL_Keysym key);
 
@@ -38,5 +47,7 @@ private:
 	bool m_windowClosed;
 
 	Camera *m_camera;
+	Shader *m_shader;
+	std::vector<Mesh *> m_meshes;
 };
 
