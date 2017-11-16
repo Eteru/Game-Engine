@@ -59,8 +59,23 @@ void GameManager::Clear(float r, float g, float b, float a)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+static inline uint32_t time_left(uint32_t next_time)
+{
+	uint32_t now = SDL_GetTicks();
+
+	if (next_time <= now)
+		return 0;
+	else
+		return next_time - now;
+}
+
 void GameManager::Run(void)
 {
+	int xrel, yrel;
+
+	static const uint16_t TICK_INTERVAL = 15;
+	uint32_t next_time = SDL_GetTicks() + TICK_INTERVAL;
+
 	while (false == m_windowClosed) {
 		Clear(0.15f, 0.15f, 0.f, 1.f);
 		
@@ -80,7 +95,8 @@ void GameManager::Run(void)
 				ParseKeyPress(e.key.keysym);
 				break;
 			case SDL_MOUSEMOTION:
-				m_camera->Rotate(-e.motion.xrel, e.motion.yrel);
+				SDL_GetRelativeMouseState(&xrel, &yrel);
+				m_camera->Rotate(xrel, yrel);
 				break;
 			case SDL_QUIT:
 				m_windowClosed = true;
@@ -90,7 +106,12 @@ void GameManager::Run(void)
 			}
 		}
 
+		ParseKeyPressRelease();
+
 		SDL_GL_SwapWindow(m_window);
+
+		SDL_Delay(time_left(next_time));
+		next_time += TICK_INTERVAL;
 	}
 }
 
@@ -104,16 +125,20 @@ void GameManager::ParseKeyPress(SDL_Keysym key)
 	switch (key.sym)
 	{
 	case SDLK_a:
-		m_camera->MoveLeft();
+	case SDLK_LEFT:
+		++m_key_time_pressed.left;
 		break;
 	case SDLK_d:
-		m_camera->MoveRight();
+	case SDLK_RIGHT:
+		++m_key_time_pressed.right;
 		break;
 	case SDLK_w:
-		m_camera->MoveForward();
+	case SDLK_UP:
+		++m_key_time_pressed.up;
 		break;
 	case SDLK_s:
-		m_camera->MoveBackwards();
+	case SDLK_DOWN:
+		++m_key_time_pressed.down;
 		break;
 	case SDLK_ESCAPE:
 		m_windowClosed = true;
@@ -121,4 +146,20 @@ void GameManager::ParseKeyPress(SDL_Keysym key)
 	default:
 		break;
 	}
+}
+
+void GameManager::ParseKeyPressRelease()
+{
+	m_camera->MoveLeft(m_key_time_pressed.left);
+	m_key_time_pressed.left = 0;
+
+	m_camera->MoveRight(m_key_time_pressed.right);
+	m_key_time_pressed.right = 0;
+
+	m_camera->MoveForward(m_key_time_pressed.up);
+	m_key_time_pressed.up = 0;
+
+	m_camera->MoveBackwards(m_key_time_pressed.down);
+	m_key_time_pressed.down = 0;
+
 }

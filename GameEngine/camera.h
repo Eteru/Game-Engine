@@ -3,13 +3,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <iostream>
 
 class Camera
 {
 public:
 	Camera() 
 		: m_position(glm::vec3(0, 0, -3)), m_forward(glm::vec3(0, 0, 1)), m_up(glm::vec3(0, 1, 0)),
-		m_camera_speed(0.05f), m_mouse_sensitivity(0.001f)
+		m_camera_speed(0.005f), m_mouse_sensitivity(0.001f)
 	{
 		m_perspective = glm::perspective(70.f, 1.33f, 0.01f, 1000.f);
 	}
@@ -51,33 +52,33 @@ public:
 		return glm::lookAt(m_position, m_position + m_forward, m_up);
 	}
 
-	inline void MoveForward(void)
+	inline void MoveForward(uint32_t count)
 	{
-		m_position += m_camera_speed * m_forward;
+		m_position += count * m_camera_speed * m_forward;
 	}
 
-	inline void MoveBackwards(void)
+	inline void MoveBackwards(uint32_t count)
 	{
-		m_position -= m_camera_speed * m_forward;
+		m_position -= count * m_camera_speed * m_forward;
 	}
 
-	inline void MoveLeft(void)
+	inline void MoveLeft(uint32_t count)
 	{
-		m_position -= glm::normalize(glm::cross(m_forward, m_up)) * m_camera_speed;
+		m_position -= glm::normalize(glm::cross(m_forward, m_up)) * (count * m_camera_speed);
 	}
 
-	inline void MoveRight(void)
+	inline void MoveRight(uint32_t count)
 	{
-		m_position += glm::normalize(glm::cross(m_forward, m_up)) * m_camera_speed;
+		m_position += glm::normalize(glm::cross(m_forward, m_up)) * (count * m_camera_speed);
 	}
 
 	inline void Rotate(int xrel, int yrel)
 	{
 		if (xrel != 0)
-			m_forward = glm::rotate(m_forward, m_mouse_sensitivity * xrel, glm::vec3(0.f, 1.f, 0.f));
+			m_forward = glm::rotate(m_forward, m_mouse_sensitivity * -xrel, glm::vec3(0.f, 1.f, 0.f));
 
 		if (yrel != 0)
-			m_forward = glm::rotate(m_forward, m_mouse_sensitivity * yrel, glm::vec3(1.f, 0.f, 0.f));
+			m_forward = glm::rotate(m_forward, m_mouse_sensitivity * -yrel, glm::vec3(1.f, 0.f, 0.f));
 	}
 
 private:

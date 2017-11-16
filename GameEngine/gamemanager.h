@@ -39,7 +39,17 @@ public:
 	}
 
 private:
+	struct KeyTimePress
+	{
+		uint32_t up;
+		uint32_t down;
+		uint32_t left;
+		uint32_t right;
+	};
+
 	void ParseKeyPress(SDL_Keysym key);
+
+	void ParseKeyPressRelease();
 
 	SDL_Window *m_window;
 	SDL_GLContext m_glContext;
@@ -49,5 +59,7 @@ private:
 	Camera *m_camera;
 	Shader *m_shader;
 	std::vector<Mesh *> m_meshes;
+
+	KeyTimePress m_key_time_pressed;
 };
 

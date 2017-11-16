@@ -20,7 +20,7 @@ int main(int argc, char *args[])
 	Mesh mesh2("./res/monkey.obj");
 	Shader shader("./res/shader");
 	Texture tex("./res/bricks.jpg");
-	Camera camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0), 70.f, manager.GetDisplayRatio(), 0.01f, 1000.f);
+	Camera camera(glm::vec3(10, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0), 70.f, manager.GetDisplayRatio(), 0.01f, 1000.f);
 
 	float angle = 0.0f;
 
