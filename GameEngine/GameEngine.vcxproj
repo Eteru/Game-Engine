@@ -120,27 +120,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BasicShader.cpp" />
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="obj_loader.cpp" />
+    <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="OctreeNode.cpp" />
+    <ClCompile Include="SceneShader.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="stb_image.c" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BasicShader.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="obj_loader.h" />
+    <ClInclude Include="Octree.h" />
+    <ClInclude Include="OctreeNode.h" />
+    <ClInclude Include="SceneShader.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shader.fs" />
-    <None Include="res\shader.vs" />
+    <None Include="res\basic_shader.fs" />
+    <None Include="res\basic_shader.vs" />
+    <None Include="res\scene_shader.fs" />
+    <None Include="res\scene_shader.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

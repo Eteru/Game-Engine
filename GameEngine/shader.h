@@ -9,17 +9,21 @@
 class Shader
 {
 public:
-	Shader(const std::string & filename);
+	Shader();
 	virtual ~Shader();
 
 	void Bind(void);
-	void Update(const Transform & transform, const Camera & camera);
 
-private:
+	virtual void Init(const std::string & filename) = 0;
+	virtual void Update(const Transform & transform, const Camera & camera) = 0;
+	virtual void Update(const glm::mat4 & M, const glm::mat4 & V, const glm::mat4 & P) = 0;
+
+protected:
 	enum SHADER_TYPE { VERTEX_SHADER = 0, FRAGMENT_SHADER, NUM_SHADERS };
 	enum UNIFORMS {
 		MODEL_U = 0,
 		VIEW_PROJECTION_U,
+		MVP_U,
 		NORMAL_MATRIX_U,
 		LIGHT_DIR_U,
 		CAMERA_POSITION_U,

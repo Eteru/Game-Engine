@@ -7,7 +7,8 @@
 
 #include "mesh.h"
 #include "camera.h"
-#include "shader.h"
+#include "Octree.h"
+#include "sceneshader.h"
 
 class GameManager
 {
@@ -17,6 +18,8 @@ public:
 
 	void Clear(float r, float g, float b, float a);
 	void Run(void);
+	void Draw(void);
+	void ParseInput(void);
 	bool IsWindowClosed(void);
 
 	inline float GetDisplayRatio(void) const
@@ -36,6 +39,7 @@ public:
 	inline void AddMesh(Mesh & mesh)
 	{
 		m_meshes.push_back(&mesh);
+		m_octree->Insert(&mesh);
 	}
 
 private:
@@ -58,6 +62,7 @@ private:
 
 	Camera *m_camera;
 	Shader *m_shader;
+	Octree *m_octree;
 	std::vector<Mesh *> m_meshes;
 
 	KeyTimePress m_key_time_pressed;

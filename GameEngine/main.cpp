@@ -3,7 +3,6 @@
 #include <GL\glew.h>
 
 #include "gamemanager.h"
-#include "shader.h"
 #include "mesh.h"
 #include "texture.h"
 #include "transform.h"
@@ -18,7 +17,6 @@ int main(int argc, char *args[])
 
 	Mesh mesh("./res/monkey.obj");
 	Mesh mesh2("./res/monkey.obj");
-	Shader shader("./res/shader");
 	Texture tex("./res/bricks.jpg");
 	Camera camera(glm::vec3(10, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0), 70.f, manager.GetDisplayRatio(), 0.01f, 1000.f);
 
@@ -26,8 +24,9 @@ int main(int argc, char *args[])
 
 	manager.SetCamera(camera);
 	mesh.SetTexture(tex);
+	mesh.GetTransform().GetPosition() = glm::vec3(10);
 	mesh2.SetTexture(tex);
-	mesh2.GetTransform().GetPosition().z = 10;
+	mesh2.GetTransform().GetPosition() = glm::vec3(5);
 
 	manager.AddMesh(mesh);
 	manager.AddMesh(mesh2);

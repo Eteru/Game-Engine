@@ -41,7 +41,11 @@ GameManager::GameManager(int width, int height, const std::string & title)
 	// Set full screen
 	//SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
 
-	m_shader = new Shader("./res/shader");
+	m_shader = new SceneShader();
+	m_shader->Init("./res/scene_shader");
+
+	// TODO: this can be done better
+	m_octree = new Octree(glm::vec3(0), glm::vec3(100));
 }
 
 GameManager::~GameManager()
@@ -71,48 +75,61 @@ static inline uint32_t time_left(uint32_t next_time)
 
 void GameManager::Run(void)
 {
-	int xrel, yrel;
-
 	static const uint16_t TICK_INTERVAL = 15;
 	uint32_t next_time = SDL_GetTicks() + TICK_INTERVAL;
 
 	while (false == m_windowClosed) {
-		Clear(0.15f, 0.15f, 0.f, 1.f);
-		
-		for (Mesh *m : m_meshes) {
-			m_shader->Bind();
-			m_shader->Update(m->GetTransform(), *m_camera);
-			m->Draw();
-		}		
+		Draw();
 
-		SDL_Event e;
-
-		while (SDL_PollEvent(&e)) {
-
-			switch (e.type)
-			{
-			case SDL_KEYDOWN:
-				ParseKeyPress(e.key.keysym);
-				break;
-			case SDL_MOUSEMOTION:
-				SDL_GetRelativeMouseState(&xrel, &yrel);
-				m_camera->Rotate(xrel, yrel);
-				break;
-			case SDL_QUIT:
-				m_windowClosed = true;
-				break;
-			default:
-				break;
-			}
-		}
-
-		ParseKeyPressRelease();
+		ParseInput();		
 
 		SDL_GL_SwapWindow(m_window);
 
 		SDL_Delay(time_left(next_time));
 		next_time += TICK_INTERVAL;
 	}
+}
+
+void GameManager::Draw(void)
+{
+	//Clear(0.15f, 0.15f, 0.f, 1.f);
+	Clear(1.0f, 1.0f, 1.f, 1.f);
+
+	for (Mesh *m : m_meshes) {
+		m_shader->Bind();
+		m_shader->Update(m->GetTransform(), *m_camera);
+		m->Draw();
+	}
+
+	// TODO: aici octree
+	m_octree->Draw(m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix());
+}
+
+void GameManager::ParseInput(void)
+{
+	int xrel, yrel;
+	SDL_Event e;
+
+	while (SDL_PollEvent(&e)) {
+
+		switch (e.type)
+		{
+		case SDL_KEYDOWN:
+			ParseKeyPress(e.key.keysym);
+			break;
+		case SDL_MOUSEMOTION:
+			SDL_GetRelativeMouseState(&xrel, &yrel);
+			m_camera->Rotate(xrel, yrel);
+			break;
+		case SDL_QUIT:
+			m_windowClosed = true;
+			break;
+		default:
+			break;
+		}
+	}
+
+	ParseKeyPressRelease();
 }
 
 bool GameManager::IsWindowClosed(void)

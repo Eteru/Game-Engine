@@ -52,6 +52,11 @@ public:
 		return glm::lookAt(m_position, m_position + m_forward, m_up);
 	}
 
+	inline glm::mat4 GetProjectionMatrix(void) const
+	{
+		return m_perspective;
+	}
+
 	inline void MoveForward(uint32_t count)
 	{
 		m_position += count * m_camera_speed * m_forward;
