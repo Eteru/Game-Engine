@@ -59,22 +59,42 @@ public:
 
 	inline void MoveForward(uint32_t count)
 	{
-		m_position += count * m_camera_speed * m_forward;
+		glm::vec3 new_pos = m_position + count * m_camera_speed * m_forward;
+		if (new_pos.x < 0 || new_pos.y < 0 || new_pos.z < 0) {
+			return;
+		}
+
+		m_position = new_pos;
 	}
 
 	inline void MoveBackwards(uint32_t count)
 	{
-		m_position -= count * m_camera_speed * m_forward;
+		glm::vec3 new_pos = m_position - count * m_camera_speed * m_forward;
+		if (new_pos.x < 0 || new_pos.y < 0 || new_pos.z < 0) {
+			return;
+		}
+
+		m_position = new_pos;
 	}
 
 	inline void MoveLeft(uint32_t count)
 	{
-		m_position -= glm::normalize(glm::cross(m_forward, m_up)) * (count * m_camera_speed);
+		glm::vec3 new_pos = m_position - glm::normalize(glm::cross(m_forward, m_up)) * (count * m_camera_speed);
+		if (new_pos.x < 0 || new_pos.y < 0 || new_pos.z < 0) {
+			return;
+		}
+
+		m_position = new_pos;
 	}
 
 	inline void MoveRight(uint32_t count)
 	{
-		m_position += glm::normalize(glm::cross(m_forward, m_up)) * (count * m_camera_speed);
+		glm::vec3 new_pos = m_position + glm::normalize(glm::cross(m_forward, m_up)) * (count * m_camera_speed);
+		if (new_pos.x < 0 || new_pos.y < 0 || new_pos.z < 0) {
+			return;
+		}
+
+		m_position = new_pos;
 	}
 
 	inline void Rotate(int xrel, int yrel)

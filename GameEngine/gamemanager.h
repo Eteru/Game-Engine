@@ -21,6 +21,8 @@ public:
 	void Draw(void);
 	void ParseInput(void);
 	bool IsWindowClosed(void);
+	bool LoadSceneFromFile(const std::string & filname);
+	bool DumpSceneToFile(const std::string & filname);
 
 	inline float GetDisplayRatio(void) const
 	{

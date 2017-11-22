@@ -1,8 +1,12 @@
 
 #include "gamemanager.h"
 
+#include <iterator>
 #include <iostream>
+#include <fstream>
 #include <GL\glew.h>
+#include <rapidxml\rapidxml.hpp>
+#include <rapidxml\rapidxml_print.hpp>
 
 GameManager::GameManager(int width, int height, const std::string & title)
 	: m_windowClosed(false)
@@ -50,6 +54,8 @@ GameManager::GameManager(int width, int height, const std::string & title)
 
 GameManager::~GameManager()
 {
+	DumpSceneToFile("scene.xml");
+
 	SDL_GL_DeleteContext(m_glContext);
 	SDL_DestroyWindow(m_window);
 	SDL_Quit();
@@ -133,6 +139,34 @@ void GameManager::ParseInput(void)
 bool GameManager::IsWindowClosed(void)
 {
 	return m_windowClosed;
+}
+
+bool GameManager::LoadSceneFromFile(const std::string & filname)
+{
+	return true;
+}
+
+bool GameManager::DumpSceneToFile(const std::string & filname)
+{
+	using namespace rapidxml;
+
+	xml_document<> doc;
+	xml_node<>* decl = doc.allocate_node(node_declaration);
+	decl->append_attribute(doc.allocate_attribute("version", "1.0"));
+	decl->append_attribute(doc.allocate_attribute("encoding", "utf-8"));
+	doc.append_node(decl);
+
+	xml_node<>* root = doc.allocate_node(node_element, "scene");
+	//root->append_attribute(doc.allocate_attribute("version", "1.0"));
+	//root->append_attribute(doc.allocate_attribute("type", "example"));
+	doc.append_node(root);
+	
+	std::ofstream file(filname);
+	file << doc;
+	file.close();
+	doc.clear();
+
+	return true;
 }
 
 void GameManager::ParseKeyPress(SDL_Keysym key)
