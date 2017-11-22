@@ -29,9 +29,15 @@ void Octree::Insert(Mesh * obj)
 
 void Octree::Draw(const glm::mat4 & V, const glm::mat4 & P) const
 {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glDisable(GL_CULL_FACE);
 	glLineWidth(3);
+
 	DrawNodes(m_root, V, P);
+
 	glLineWidth(1);
+	glEnable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Octree::InsertIntoNode(Mesh * obj, OctreeNode * node)
@@ -68,7 +74,7 @@ void Octree::DrawNodes(const OctreeNode * node, const glm::mat4 & V, const glm::
 		return;
 	}
 
-	glm::mat4 M = glm::translate(node->m_center) * glm::scale(glm::vec3(2 * node->m_sq_radius));
+	glm::mat4 M = glm::mat4(1);// glm::translate(glm::mat4(1), node->m_center) * glm::scale(glm::mat4(1), glm::vec3(2 * node->m_sq_radius));
 
 	DrawNodeGL(node, M, V, P);
 
@@ -86,7 +92,8 @@ void Octree::DrawNodeGL(const OctreeNode * node, const glm::mat4 & M, const glm:
 
 	glBindVertexArray(node->m_vao);
 
-	glDrawElements(GL_LINE_LOOP, node->VERTICES_COUNT, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_QUADS, node->CHILDREN_COUNT, GL_UNSIGNED_INT, 0);
+	//glDrawArrays(GL_LINE_LOOP, 0, node->CHILDREN_COUNT);
 
 	glBindVertexArray(0);
 }

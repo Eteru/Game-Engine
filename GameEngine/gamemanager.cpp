@@ -45,7 +45,7 @@ GameManager::GameManager(int width, int height, const std::string & title)
 	m_shader->Init("./res/scene_shader");
 
 	// TODO: this can be done better
-	m_octree = new Octree(glm::vec3(0), glm::vec3(100));
+	m_octree = new Octree(glm::vec3(0), glm::vec3(50));
 }
 
 GameManager::~GameManager()
@@ -92,8 +92,7 @@ void GameManager::Run(void)
 
 void GameManager::Draw(void)
 {
-	//Clear(0.15f, 0.15f, 0.f, 1.f);
-	Clear(1.0f, 1.0f, 1.f, 1.f);
+	Clear(0.15f, 0.15f, 0.f, 1.f);
 
 	for (Mesh *m : m_meshes) {
 		m_shader->Bind();
@@ -101,7 +100,6 @@ void GameManager::Draw(void)
 		m->Draw();
 	}
 
-	// TODO: aici octree
 	m_octree->Draw(m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix());
 }
 

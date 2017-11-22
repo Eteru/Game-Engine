@@ -5,7 +5,7 @@
 struct OctreeNode
 {
 	static const short CHILDREN_COUNT = 8;
-	static const short VERTICES_COUNT = 36;
+	static const short VERTICES_COUNT = 24;
 
 	GLuint m_vbo;
 	GLuint m_ibo;
