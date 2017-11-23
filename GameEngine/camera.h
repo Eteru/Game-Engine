@@ -10,15 +10,15 @@ class Camera
 public:
 	Camera() 
 		: m_position(glm::vec3(0, 0, -3)), m_forward(glm::vec3(0, 0, 1)), m_up(glm::vec3(0, 1, 0)),
-		m_camera_speed(0.005f), m_mouse_sensitivity(0.001f)
+		m_fov(70.f), m_zNear(0.01f), m_zFar(1000.f), m_camera_speed(0.005f), m_mouse_sensitivity(0.001f)
 	{
 		m_perspective = glm::perspective(70.f, 1.33f, 0.01f, 1000.f);
 	}
 
 	Camera(const glm::vec3 & pos, const glm::vec3 & forward,
 		const glm::vec3 & up, float fov, float ratio, float zNear, float zFar)
-		: m_position(pos), m_forward(forward), m_up(up), m_camera_speed(0.05f),
-		m_mouse_sensitivity(0.001f)
+		: m_position(pos), m_forward(forward), m_up(up), m_fov(fov), m_zNear(zNear),
+		m_zFar(zFar), m_camera_speed(0.05f), m_mouse_sensitivity(0.001f)
 	{
 		m_perspective = glm::perspective(fov, ratio, zNear, zFar);
 	}
@@ -55,6 +55,31 @@ public:
 	inline glm::mat4 GetProjectionMatrix(void) const
 	{
 		return m_perspective;
+	}
+
+	inline float GetMouseSensitivity(void) const
+	{
+		return m_mouse_sensitivity;
+	}
+
+	inline float GetCameraSpeed(void) const
+	{
+		return m_camera_speed;
+	}
+
+	inline float GetFOV(void) const
+	{
+		return m_fov;
+	}
+
+	inline float GetNearPlane(void) const
+	{
+		return m_zNear;
+	}
+
+	inline float GetFarPlane(void) const
+	{
+		return m_zFar;
 	}
 
 	inline void MoveForward(uint32_t count)
@@ -107,12 +132,15 @@ public:
 	}
 
 private:
+	float m_camera_speed;
+	float m_mouse_sensitivity;
+	float m_fov;
+	float m_zNear;
+	float m_zFar;
+
 	glm::mat4 m_perspective;
 	glm::vec3 m_position;
 	glm::vec3 m_forward;
 	glm::vec3 m_up;
-
-	float m_camera_speed;
-	float m_mouse_sensitivity;
 };
 

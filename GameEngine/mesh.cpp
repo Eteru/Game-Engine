@@ -1,29 +1,16 @@
 
 #include "mesh.h"
+#include "ResourceManager.h"
 
 #include <algorithm>
-
-Mesh::Mesh(std::vector<Vertex> & vertices, std::vector<uint32_t> & indices)
-{
-	IndexedModel model;
-
-	for (size_t i = 0; i < vertices.size(); ++i) {
-		model.positions.push_back(vertices[i].position);
-		model.texCoords.push_back(vertices[i].texCoord);
-		model.normals.push_back(vertices[i].normal);
-	}
-
-	for (size_t i = 0; i < indices.size(); ++i)
-		model.indices.push_back(indices[i]);
-
-	InitMesh(model);
-}
 
 Mesh::Mesh(const std::string & filename)
 {
 	IndexedModel model = OBJModel(filename).ToIndexedModel();
 
 	InitMesh(model);
+
+	m_shader = ResourceManager::GetInstance()->GetShader("./res/scene_shader");
 }
 
 Mesh::Mesh(const Mesh & obj)
@@ -37,17 +24,11 @@ Mesh::Mesh(const Mesh & obj)
 		m_vbo[i] = obj.m_vbo[i];
 	}
 	
-	m_indices_count = obj.m_indices_count;
-
-	for (int i = 0; i < 3; ++i) {
-		m_diffuse_material[i] = obj.m_diffuse_material[i];
-		m_specular_material[i] = obj.m_specular_material[i];
-		m_emissive_material[i] = obj.m_emissive_material[i];
-	}
-
-	m_shininess = obj.m_shininess;
-
+	m_bb = obj.m_bb;
+	m_shader = obj.m_shader;
 	m_texture = obj.m_texture;
+	m_material = obj.m_material;
+	m_indices_count = obj.m_indices_count;
 }
 
 Mesh::~Mesh()
@@ -58,6 +39,7 @@ Mesh::~Mesh()
 
 void Mesh::Draw(void)
 {
+	m_shader->Bind();
 	m_texture.Bind(0);
 
 	glBindVertexArray(m_vao);
@@ -65,6 +47,11 @@ void Mesh::Draw(void)
 	glDrawElements(GL_TRIANGLES, m_indices_count, GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
+}
+
+void Mesh::Update(Camera *cam)
+{
+	m_shader->Update(m_transform, *cam);
 }
 
 void Mesh::InitMesh(const IndexedModel & model)

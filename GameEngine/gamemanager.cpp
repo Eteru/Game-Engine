@@ -9,7 +9,7 @@
 #include <rapidxml\rapidxml_print.hpp>
 
 GameManager::GameManager(int width, int height, const std::string & title)
-	: m_windowClosed(false)
+	: m_windowClosed(false), m_background_color(0.15f, 0.15f, 0.f, 1.f), m_width(width), m_height(height)
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
 
@@ -44,9 +44,6 @@ GameManager::GameManager(int width, int height, const std::string & title)
 
 	// Set full screen
 	//SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
-
-	m_shader = new SceneShader();
-	m_shader->Init("./res/scene_shader");
 
 	// TODO: this can be done better
 	m_octree = new Octree(glm::vec3(0), glm::vec3(50));
@@ -98,11 +95,10 @@ void GameManager::Run(void)
 
 void GameManager::Draw(void)
 {
-	Clear(0.15f, 0.15f, 0.f, 1.f);
+	Clear(m_background_color.r, m_background_color.g, m_background_color.b, m_background_color.a);
 
 	for (Mesh *m : m_meshes) {
-		m_shader->Bind();
-		m_shader->Update(m->GetTransform(), *m_camera);
+		m->Update(m_camera);
 		m->Draw();
 	}
 
@@ -159,8 +155,81 @@ bool GameManager::DumpSceneToFile(const std::string & filname)
 	xml_node<>* root = doc.allocate_node(node_element, "scene");
 	//root->append_attribute(doc.allocate_attribute("version", "1.0"));
 	//root->append_attribute(doc.allocate_attribute("type", "example"));
-	doc.append_node(root);
 	
+	xml_node<>* window = doc.allocate_node(node_element, "window");
+	std::string w = std::to_string(m_width);
+	std::string h = std::to_string(m_height);
+
+	window->append_attribute(doc.allocate_attribute("width", w.c_str()));
+	window->append_attribute(doc.allocate_attribute("height", h.c_str()));
+	root->append_node(window);
+	
+	xml_node<>* bkg = doc.allocate_node(node_element, "background");
+	std::string r = std::to_string(m_background_color.r);
+	std::string g = std::to_string(m_background_color.g);
+	std::string b = std::to_string(m_background_color.b);
+	std::string a = std::to_string(m_background_color.a);
+
+	bkg->append_attribute(doc.allocate_attribute("r", r.c_str()));
+	bkg->append_attribute(doc.allocate_attribute("g", g.c_str()));
+	bkg->append_attribute(doc.allocate_attribute("b", b.c_str()));
+	bkg->append_attribute(doc.allocate_attribute("a", a.c_str()));
+	root->append_node(bkg);
+
+	// Camera
+	xml_node<>* cam = doc.allocate_node(node_element, "camera");
+	std::string speed = std::to_string(m_camera->GetCameraSpeed());
+	std::string sensitivity = std::to_string(m_camera->GetMouseSensitivity());
+	std::string fov = std::to_string(m_camera->GetFOV());
+	std::string zNear = std::to_string(m_camera->GetNearPlane());
+	std::string zFar = std::to_string(m_camera->GetFarPlane());
+
+	cam->append_attribute(doc.allocate_attribute("speed", speed.c_str()));
+	cam->append_attribute(doc.allocate_attribute("sensitivity", sensitivity.c_str()));
+	cam->append_attribute(doc.allocate_attribute("fov", fov.c_str()));
+	cam->append_attribute(doc.allocate_attribute("near", zNear.c_str()));
+	cam->append_attribute(doc.allocate_attribute("far", zFar.c_str()));
+
+	glm::vec3 pos = m_camera->GetPosition();
+	xml_node<>* camera_pos = doc.allocate_node(node_element, "position");
+	std::string cam_pos_x = std::to_string(pos.x);
+	std::string cam_pos_y = std::to_string(pos.y);
+	std::string cam_pos_z = std::to_string(pos.z);
+
+	camera_pos->append_attribute(doc.allocate_attribute("x", cam_pos_x.c_str()));
+	camera_pos->append_attribute(doc.allocate_attribute("y", cam_pos_y.c_str()));
+	camera_pos->append_attribute(doc.allocate_attribute("z", cam_pos_z.c_str()));
+
+	cam->append_node(camera_pos);
+
+	glm::vec3 forward = m_camera->GetForward();
+	xml_node<>* camera_fw = doc.allocate_node(node_element, "forward");
+	std::string cam_fw_x = std::to_string(forward.x);
+	std::string cam_fw_y = std::to_string(forward.y);
+	std::string cam_fw_z = std::to_string(forward.z);
+
+	camera_fw->append_attribute(doc.allocate_attribute("x", cam_fw_x.c_str()));
+	camera_fw->append_attribute(doc.allocate_attribute("y", cam_fw_y.c_str()));
+	camera_fw->append_attribute(doc.allocate_attribute("z", cam_fw_z.c_str()));
+
+	cam->append_node(camera_fw);
+
+	glm::vec3 up = m_camera->GetUp();
+	xml_node<>* camera_up = doc.allocate_node(node_element, "up");
+	std::string cam_up_x = std::to_string(up.x);
+	std::string cam_up_y = std::to_string(up.y);
+	std::string cam_up_z = std::to_string(up.z);
+
+	camera_up->append_attribute(doc.allocate_attribute("x", cam_up_x.c_str()));
+	camera_up->append_attribute(doc.allocate_attribute("y", cam_up_y.c_str()));
+	camera_up->append_attribute(doc.allocate_attribute("z", cam_up_z.c_str()));
+
+	cam->append_node(camera_up);
+
+	root->append_node(cam);
+
+	doc.append_node(root);
+		
 	std::ofstream file(filname);
 	file << doc;
 	file.close();

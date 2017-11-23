@@ -60,6 +60,7 @@ void SceneShader::Init(const std::string & filename)
 void SceneShader::Update(const Transform & transform, const Camera & camera)
 {
 	glm::vec3 camera_pos = camera.GetPosition();
+	glm::vec3 light_dir = camera_pos + camera.GetForward();
 	glm::mat3 normal_matrix = glm::inverseTranspose(glm::mat3(camera.GetViewMatrix()));
 
 	glm::vec3 u_lightAmbientIntensitys = glm::vec3(0.6, 0.3, 0);
@@ -74,7 +75,7 @@ void SceneShader::Update(const Transform & transform, const Camera & camera)
 	glUniformMatrix4fv(m_uniforms[MODEL_U], 1, GL_FALSE, &transform.GetModel()[0][0]);
 	glUniformMatrix4fv(m_uniforms[VIEW_PROJECTION_U], 1, GL_FALSE, &camera.GetViewProjection()[0][0]);
 	glUniformMatrix3fv(m_uniforms[NORMAL_MATRIX_U], 1, GL_FALSE, &normal_matrix[0][0]);
-	glUniform3fv(m_uniforms[LIGHT_DIR_U], 1, &camera.GetForward()[0]);
+	glUniform3fv(m_uniforms[LIGHT_DIR_U], 1, &light_dir.x);
 	glUniform3fv(m_uniforms[CAMERA_POSITION_U], 1, &camera_pos.x);
 
 	glUniform3fv(m_uniforms[LIGHT_AMBIENTAL_U], 1, &u_lightAmbientIntensitys.x);

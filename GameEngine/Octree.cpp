@@ -92,7 +92,7 @@ void Octree::DrawNodeGL(const OctreeNode * node, const glm::mat4 & M, const glm:
 
 	glBindVertexArray(node->m_vao);
 
-	glDrawElements(GL_QUADS, node->CHILDREN_COUNT, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_QUADS, node->VERTICES_COUNT, GL_UNSIGNED_INT, 0);
 	//glDrawArrays(GL_LINE_LOOP, 0, node->CHILDREN_COUNT);
 
 	glBindVertexArray(0);
