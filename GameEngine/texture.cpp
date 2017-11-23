@@ -1,54 +1,63 @@
 
-#include "texture.h"
+#include "Texture.h"
 #include "stb_image.h"
 
 #include <iostream>
 
-Texture::Texture()
+Texture::Texture() : m_tr(nullptr), m_loaded(false)
 {
 }
 
-Texture::Texture(const std::string & filename)
+Texture::Texture(TextureResource * tr) : m_tr(tr), m_loaded(false)
 {
-	int width, height, compCount;
-	unsigned char *data = stbi_load(filename.c_str(), &width, &height, &compCount, 4);
-
-	if (nullptr == data) {
-		std::cerr << "[Texture]: failed loading (" << stbi_failure_reason() << ")"
-			<< filename << std::endl;
-		return;
-	}
-
-	glGenTextures(1, &m_texture);
-	glBindTexture(GL_TEXTURE_2D, m_texture);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-	stbi_image_free(data);
-}
-
-Texture::Texture(const Texture & obj)
-{
-	m_texture = obj.m_texture;
 }
 
 Texture::~Texture()
 {
-	glDeleteTextures(1, &m_texture);
+	if (nullptr != m_tr) {
+		delete m_tr;
+	}
 }
 
-void Texture::Bind(uint32_t unit)
+bool Texture::Load()
 {
-	if (unit < 32) {
+	if (true == m_loaded) {
+		return true;
+	}
+
+	if (nullptr == m_tr) {
+		return false;
+	}
+
+	int width, height, compCount;
+	unsigned char *data = stbi_load(m_tr->texture_path.c_str(), &width, &height, &compCount, 4);
+
+	if (nullptr == data) {
+		std::cerr << "[Texture]: failed loading (" << stbi_failure_reason() << ")"
+			<< m_tr->texture_path << std::endl;
 		return;
 	}
 
-	glActiveTexture(GL_TEXTURE0 + unit);
-	glBindTexture(GL_TEXTURE_2D, m_texture);
+	glGenTextures(1, &m_id);
+	glBindTexture(m_tr->type, m_id);
+
+	glTexParameteri(m_tr->type, GL_TEXTURE_WRAP_S, m_tr->wrap_s);
+	glTexParameteri(m_tr->type, GL_TEXTURE_WRAP_T, m_tr->wrap_t);
+
+	glTexParameterf(m_tr->type, GL_TEXTURE_MIN_FILTER, m_tr->min_filter);
+	glTexParameterf(m_tr->type, GL_TEXTURE_MAG_FILTER, m_tr->mag_filter);
+
+	glTexImage2D(m_tr->type, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+	stbi_image_free(data);
+
+	m_loaded = true;
+	return true;
+}
+
+Texture::Texture(const Texture & obj)
+{
+	m_loaded = obj.m_loaded;
+	m_id = obj.m_id;
+	m_tr = obj.m_tr;
 }

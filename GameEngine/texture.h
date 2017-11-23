@@ -1,19 +1,30 @@
 #pragma once
 
 #include <string>
-#include <GL\glew.h>
+#include "Structs.h"
 
 class Texture
 {
 public:
 	Texture();
-	Texture(const std::string & filename);
-	Texture(const Texture &obj);
-	virtual ~Texture();
+	Texture(TextureResource *tr);
+	~Texture();
 
-	void Bind(uint32_t unit);
+	bool Load();
+
+	inline bool IsLoaded()
+	{
+		return m_loaded;
+	}
+
+	inline GLuint GetID() const
+	{
+		return m_id;
+	}
 
 private:
-	GLuint m_texture;
-};
+	bool m_loaded;
+	GLuint m_id;
 
+	TextureResource *m_tr;
+};
