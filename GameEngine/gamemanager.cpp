@@ -56,8 +56,6 @@ GameManager::~GameManager()
 	SDL_GL_DeleteContext(m_glContext);
 	SDL_DestroyWindow(m_window);
 	SDL_Quit();
-
-	delete m_shader;
 }
 
 void GameManager::Clear(float r, float g, float b, float a)
@@ -96,6 +94,12 @@ void GameManager::Run(void)
 void GameManager::Draw(void)
 {
 	Clear(m_background_color.r, m_background_color.g, m_background_color.b, m_background_color.a);
+
+	if (nullptr != m_meshes[0]) {
+		// Some weird bug that causes the first element to not draw
+		m_meshes[0]->Update(m_camera);
+		m_meshes[0]->Draw();
+	}
 
 	for (Mesh *m : m_meshes) {
 		m->Update(m_camera);

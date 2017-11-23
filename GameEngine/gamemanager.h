@@ -64,7 +64,6 @@ private:
 	uint32_t m_width, m_height;
 
 	Camera *m_camera;
-	Shader *m_shader;
 	Octree *m_octree;
 	std::vector<Mesh *> m_meshes;
 
