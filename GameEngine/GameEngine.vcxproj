@@ -124,10 +124,13 @@
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="obj_loader.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="OctreeNode.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="SceneShader.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="stb_image.c" />
@@ -138,13 +141,17 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="mesh.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="obj_loader.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="OctreeNode.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SceneObject.h" />
     <ClInclude Include="SceneShader.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Structs.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="transform.h" />
   </ItemGroup>

@@ -5,10 +5,8 @@
 #include <vector>
 #include <SDL2\SDL.h>
 
-#include "mesh.h"
 #include "camera.h"
 #include "Octree.h"
-#include "ResourceManager.h"
 
 class GameManager
 {
@@ -37,13 +35,7 @@ public:
 	{
 		m_camera = &camera;
 	}
-
-	inline void AddMesh(Mesh & mesh)
-	{
-		m_meshes.push_back(&mesh);
-		m_octree->Insert(&mesh);
-	}
-
+	
 private:
 	struct KeyTimePress
 	{
@@ -64,8 +56,6 @@ private:
 	uint32_t m_width, m_height;
 
 	Camera *m_camera;
-	Octree *m_octree;
-	std::vector<Mesh *> m_meshes;
 
 	glm::vec4 m_background_color;
 	KeyTimePress m_key_time_pressed;

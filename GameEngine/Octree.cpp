@@ -1,6 +1,6 @@
+
 #include "Octree.h"
-
-
+#include "ResourceManager.h"
 
 Octree::Octree(glm::vec3 wmin, glm::vec3 wmax)
 	: m_min_point(wmin), m_max_point(wmax)
@@ -9,8 +9,7 @@ Octree::Octree(glm::vec3 wmin, glm::vec3 wmax)
 	float r = (wmax.x - wmin.x) / 2.f;
 
 	m_root = new OctreeNode(center, r);
-	m_shader = new BasicShader();
-	m_shader->Init("./res/basic_shader");
+	m_shader = ResourceManager::GetInstance()->LoadShader("1");
 }
 
 Octree::~Octree()
@@ -22,7 +21,7 @@ Octree::~Octree()
 		delete m_shader;
 }
 
-void Octree::Insert(Mesh * obj)
+void Octree::Insert(SceneObject * obj)
 {
 	InsertIntoNode(obj, m_root);
 }
@@ -33,6 +32,7 @@ void Octree::Draw(const glm::mat4 & V, const glm::mat4 & P) const
 	glDisable(GL_CULL_FACE);
 	glLineWidth(3);
 
+	m_shader->Bind();
 	DrawNodes(m_root, V, P);
 
 	glLineWidth(1);
@@ -40,7 +40,7 @@ void Octree::Draw(const glm::mat4 & V, const glm::mat4 & P) const
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Octree::InsertIntoNode(Mesh * obj, OctreeNode * node)
+void Octree::InsertIntoNode(SceneObject * obj, OctreeNode * node)
 {
 	bool is_contained = false;
 	BoundingBox bb = obj->GetBoundingBox();
@@ -87,7 +87,6 @@ void Octree::DrawNodes(const OctreeNode * node, const glm::mat4 & V, const glm::
 
 void Octree::DrawNodeGL(const OctreeNode * node, const glm::mat4 & M, const glm::mat4 & V, const glm::mat4 & P) const
 {
-	m_shader->Bind();
 	m_shader->Update(M, V, P);
 
 	glBindVertexArray(node->m_vao);

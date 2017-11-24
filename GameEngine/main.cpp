@@ -2,11 +2,11 @@
 #include <iostream>
 #include <GL\glew.h>
 
-#include "gamemanager.h"
 #include "mesh.h"
 #include "texture.h"
 #include "transform.h"
 #include "camera.h"
+#include "gamemanager.h"
 
 // SDL defined main and leads to link error, must undefine it
 #undef main
@@ -16,11 +16,9 @@ int main(int argc, char *args[])
 	GameManager manager(1920, 1080, "OpenGL Window");
 
 	// Add shaders
-	Shader *shader = new SceneShader();
+	/*Shader *shader = new SceneShader();
 	shader->Init("./res/scene_shader");
-
-	ResourceManager::GetInstance()->AddShader("./res/scene_shader", shader);
-
+	
 	Mesh mesh("./res/monkey.obj");
 	Mesh mesh2("./res/monkey.obj");
 	Mesh mesh3("./res/monkey.obj");
@@ -41,7 +39,7 @@ int main(int argc, char *args[])
 	manager.AddMesh(mesh);
 	manager.AddMesh(mesh2);
 	manager.AddMesh(mesh3);
-
+	*/
 	manager.Run();
 
 	return 0;

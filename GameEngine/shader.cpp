@@ -5,7 +5,11 @@
 #include <fstream>
 
 
-Shader::Shader()
+Shader::Shader() : m_sr(nullptr), m_loaded(false)
+{
+}
+
+Shader::Shader(ShaderResource * sr) : m_sr(sr), m_loaded(false)
 {
 }
 
@@ -18,6 +22,22 @@ Shader::~Shader()
 	}
 
 	glDeleteProgram(m_program);
+}
+
+bool Shader::Load()
+{
+	if (true == m_loaded) {
+		return true;
+	}
+
+	if (nullptr == m_sr) {
+		return false;
+	}
+
+	Init(&m_sr->vs_path[0], &m_sr->fs_path[0]);
+
+	m_loaded = true;
+	return true;
 }
 
 void Shader::Bind(void)

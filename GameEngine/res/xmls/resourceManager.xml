@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resourceManager>
+	<models>
+		<model id="1">
+			<path>res/objects/monkey.obj</path>
+		</model>
+	</models>
+	<shaders>
+		<shader id="1" type="0">
+			<vs>res/shaders/basic_shader.vs</vs>
+			<fs>res/shaders/basic_shader.fs</fs>
+		</shader>
+		<shader id="2" type="1">
+			<vs>res/shaders/scene_shader.vs</vs>
+			<fs>res/shaders/scene_shader.fs</fs>
+		</shader>
+		<!-- si aici se adauga toate shaderele -->
+	</shaders>
+	<textures>
+		<texture id="1" type="2d">
+			<path>res/textures/bricks.jpg</path>			
+			<min_filter>LINEAR</min_filter>
+			<mag_filter>LINEAR</mag_filter>
+			<wrap_s>CLAMP_TO_EDGE</wrap_s>
+			<wrap_t>CLAMP_TO_EDGE</wrap_t>
+		</texture>
+		<!-- si aici se adauga toate texturile -->
+	</textures>	
+</resourceManager>

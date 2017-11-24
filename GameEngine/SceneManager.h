@@ -4,9 +4,11 @@
 #include <string>
 #include <iostream>
 #include <rapidxml\rapidxml.hpp>
+
 #include "SceneObject.h"
 #include "ResourceManager.h"
 #include "Camera.h"
+#include "Octree.h"
 
 class SceneManager
 {
@@ -27,6 +29,7 @@ public:
 private:
 	static SceneManager *m_instance;
 
+	Octree *m_octree;
 	glm::vec3 m_background_color;
 	std::map<std::string, Camera *> m_cameras;
 	std::map<std::string, SceneObject *> m_objects;

@@ -16,9 +16,10 @@ public:
 	}
 
 	Camera(const glm::vec3 & pos, const glm::vec3 & forward,
-		const glm::vec3 & up, float fov, float ratio, float zNear, float zFar)
+		const glm::vec3 & up, float fov, float ratio, float zNear, float zFar,
+		float camera_speed, float sensitivity)
 		: m_position(pos), m_forward(forward), m_up(up), m_fov(fov), m_zNear(zNear),
-		m_zFar(zFar), m_camera_speed(0.05f), m_mouse_sensitivity(0.001f)
+		m_zFar(zFar), m_camera_speed(camera_speed), m_mouse_sensitivity(sensitivity)
 	{
 		m_perspective = glm::perspective(fov, ratio, zNear, zFar);
 	}
@@ -85,8 +86,15 @@ public:
 	inline void MoveForward(uint32_t count)
 	{
 		glm::vec3 new_pos = m_position + count * m_camera_speed * m_forward;
-		if (new_pos.x < 0 || new_pos.y < 0 || new_pos.z < 0) {
-			return;
+
+		if (new_pos.x < 0) {
+			new_pos.x = 0;
+		} 
+		if (new_pos.y < 0) {
+			new_pos.y = 0;
+		}
+		if (new_pos.z < 0) {
+			new_pos.z = 0;
 		}
 
 		m_position = new_pos;
@@ -95,8 +103,15 @@ public:
 	inline void MoveBackwards(uint32_t count)
 	{
 		glm::vec3 new_pos = m_position - count * m_camera_speed * m_forward;
-		if (new_pos.x < 0 || new_pos.y < 0 || new_pos.z < 0) {
-			return;
+
+		if (new_pos.x < 0) {
+			new_pos.x = 0;
+		}
+		if (new_pos.y < 0) {
+			new_pos.y = 0;
+		}
+		if (new_pos.z < 0) {
+			new_pos.z = 0;
 		}
 
 		m_position = new_pos;
@@ -105,8 +120,15 @@ public:
 	inline void MoveLeft(uint32_t count)
 	{
 		glm::vec3 new_pos = m_position - glm::normalize(glm::cross(m_forward, m_up)) * (count * m_camera_speed);
-		if (new_pos.x < 0 || new_pos.y < 0 || new_pos.z < 0) {
-			return;
+
+		if (new_pos.x < 0) {
+			new_pos.x = 0;
+		}
+		if (new_pos.y < 0) {
+			new_pos.y = 0;
+		}
+		if (new_pos.z < 0) {
+			new_pos.z = 0;
 		}
 
 		m_position = new_pos;
@@ -115,8 +137,15 @@ public:
 	inline void MoveRight(uint32_t count)
 	{
 		glm::vec3 new_pos = m_position + glm::normalize(glm::cross(m_forward, m_up)) * (count * m_camera_speed);
-		if (new_pos.x < 0 || new_pos.y < 0 || new_pos.z < 0) {
-			return;
+
+		if (new_pos.x < 0) {
+			new_pos.x = 0;
+		}
+		if (new_pos.y < 0) {
+			new_pos.y = 0;
+		}
+		if (new_pos.z < 0) {
+			new_pos.z = 0;
 		}
 
 		m_position = new_pos;

@@ -7,6 +7,7 @@ class Texture
 {
 public:
 	Texture();
+	Texture(const Texture & obj);
 	Texture(TextureResource *tr);
 	~Texture();
 

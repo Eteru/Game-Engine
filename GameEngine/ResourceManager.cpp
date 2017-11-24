@@ -1,5 +1,7 @@
 
 #include "ResourceManager.h"
+#include "BasicShader.h"
+#include "SceneShader.h"
 
 ResourceManager *ResourceManager::m_instance = nullptr;
 
@@ -126,8 +128,11 @@ bool ResourceManager::Init(std::string filepath)
 	for (rapidxml::xml_node<> *pNode = pShader->first_node("shader"); pNode; pNode = pNode->next_sibling()) {
 		ShaderResource *sr = new ShaderResource;
 
-		rapidxml::xml_attribute<> *pAttribute = pNode->first_attribute();
-		sr->id = std::string(pAttribute->value());
+		rapidxml::xml_attribute<> *pId = pNode->first_attribute("id");
+		sr->id = std::string(pId->value());
+
+		rapidxml::xml_attribute<> *pType = pNode->first_attribute("type");
+		sr->type = static_cast<ShaderType>(std::stoi(pType->value()));
 
 		rapidxml::xml_node<> *pVS = pNode->first_node("vs");
 		sr->vs_path = std::string(pVS->value());
@@ -239,7 +244,16 @@ Shader *ResourceManager::LoadShader(std::string id)
 	}
 
 	if (m_shader_map.find(id) == m_shader_map.end()) {
-		m_shader_map[id] = new Shader(m_shader_resource_map[id]);
+		switch (m_shader_resource_map[id]->type) 
+		{
+		case ST_BASIC:
+			m_shader_map[id] = new BasicShader(m_shader_resource_map[id]);
+			break;
+		case ST_SCENE:
+			m_shader_map[id] = new SceneShader(m_shader_resource_map[id]);
+			break;
+		}
+		
 	}
 
 	m_shader_map[id]->Load();

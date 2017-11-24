@@ -6,17 +6,22 @@ BasicShader::BasicShader()
 {
 }
 
+BasicShader::BasicShader(ShaderResource * sr)
+	: Shader(sr)
+{
+}
+
 BasicShader::~BasicShader()
 {
 }
 
-void BasicShader::Init(const std::string & filename)
+void BasicShader::Init(const std::string & vs, const std::string & fs)
 {
 	m_program = glCreateProgram();
 
 	// Load and create shaders
-	m_shaders[VERTEX_SHADER] = CreateShader(LoadShader(filename + ".vs"), GL_VERTEX_SHADER);
-	m_shaders[FRAGMENT_SHADER] = CreateShader(LoadShader(filename + ".fs"), GL_FRAGMENT_SHADER);
+	m_shaders[VERTEX_SHADER] = CreateShader(LoadShader(vs), GL_VERTEX_SHADER);
+	m_shaders[FRAGMENT_SHADER] = CreateShader(LoadShader(fs), GL_FRAGMENT_SHADER);
 
 	// Attach shaders to the program
 	for (size_t i = 0; i < NUM_SHADERS; ++i) {

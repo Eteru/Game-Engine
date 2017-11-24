@@ -12,11 +12,15 @@ Texture::Texture(TextureResource * tr) : m_tr(tr), m_loaded(false)
 {
 }
 
+Texture::Texture(const Texture & obj)
+{
+	m_loaded = obj.m_loaded;
+	m_id = obj.m_id;
+	m_tr = obj.m_tr;
+}
+
 Texture::~Texture()
 {
-	if (nullptr != m_tr) {
-		delete m_tr;
-	}
 }
 
 bool Texture::Load()
@@ -35,7 +39,7 @@ bool Texture::Load()
 	if (nullptr == data) {
 		std::cerr << "[Texture]: failed loading (" << stbi_failure_reason() << ")"
 			<< m_tr->texture_path << std::endl;
-		return;
+		return false;
 	}
 
 	glGenTextures(1, &m_id);
@@ -55,9 +59,3 @@ bool Texture::Load()
 	return true;
 }
 
-Texture::Texture(const Texture & obj)
-{
-	m_loaded = obj.m_loaded;
-	m_id = obj.m_id;
-	m_tr = obj.m_tr;
-}

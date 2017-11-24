@@ -39,9 +39,6 @@ Mesh::~Mesh()
 
 void Mesh::Draw(void)
 {
-	m_shader->Bind();
-	m_texture.Bind(0);
-
 	glBindVertexArray(m_vao);
 
 	glDrawElements(GL_TRIANGLES, m_indices_count, GL_UNSIGNED_INT, 0);

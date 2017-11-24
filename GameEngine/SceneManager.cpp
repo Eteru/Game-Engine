@@ -5,14 +5,24 @@ SceneManager *SceneManager::m_instance = nullptr;
 
 SceneManager::SceneManager()
 {
+	m_octree = new Octree(glm::vec3(0), glm::vec3(50));
 }
-
 
 SceneManager::~SceneManager()
 {
 	if (nullptr != m_instance) {
 		delete m_instance;
 	}
+
+	for (auto it : m_cameras) {
+		delete it.second;
+	}
+
+	for (auto it : m_objects) {
+		delete it.second;
+	}
+
+	delete m_octree;
 }
 
 SceneManager * SceneManager::GetInstance()
@@ -77,7 +87,7 @@ bool SceneManager::Init(std::string filepath)
 
 		std::string id = std::string(pAttribute->value());
 
-		float translateSpeed, rotationSpeed, fov, cnear, cfar;
+		float speed, sensitivity, fov, cnear, cfar;
 		glm::vec3 pos, target, up;
 
 		rapidxml::xml_node<> *pPosition = pCamera->first_node("position");
@@ -113,22 +123,22 @@ bool SceneManager::Init(std::string filepath)
 			up.z = std::stof(pUp->first_node("z")->value());
 		}
 
-		rapidxml::xml_node<> *pTranslationSpeed = pCamera->first_node("translationSpeed");
+		rapidxml::xml_node<> *pSpeed = pCamera->first_node("speed");
 
-		if (nullptr == pTranslationSpeed) {
-			translateSpeed = 10;
+		if (nullptr == pSpeed) {
+			speed = 0.005;
 		}
 		else {
-			translateSpeed = std::stoi(pTranslationSpeed->value());
+			speed = std::stof(pSpeed->value());
 		}
 
-		rapidxml::xml_node<> *pRotationSpeed = pCamera->first_node("rotationSpeed");
+		rapidxml::xml_node<> *pSensitivity = pCamera->first_node("sensitivity");
 
-		if (nullptr == pRotationSpeed) {
-			rotationSpeed = 0.3f;
+		if (nullptr == pSensitivity) {
+			sensitivity = 0.3f;
 		}
 		else {
-			rotationSpeed = std::stof(pRotationSpeed->value());
+			sensitivity = std::stof(pSensitivity->value());
 		}
 
 		rapidxml::xml_node<> *pFov = pCamera->first_node("fov");
@@ -158,7 +168,7 @@ bool SceneManager::Init(std::string filepath)
 			cfar = std::stof(pFar->value());
 		}
 
-		m_cameras[id] = new Camera(pos, target, up, translateSpeed, rotationSpeed, cnear, cfar, fov);
+		m_cameras[id] = new Camera(pos, target, up, fov, 1.7777f, cnear, cfar, speed, sensitivity);
 	}
 
 	rapidxml::xml_node<> *pActiveCamera = pRoot->first_node("activeCamera");
@@ -180,7 +190,7 @@ bool SceneManager::Init(std::string filepath)
 		rapidxml::xml_attribute<> *pAttribute = pObject->first_attribute("id");
 
 		if (nullptr == pAttribute) {
-			std::cerr << "Camera id missing" << std::endl;
+			std::cerr << "Object id missing" << std::endl;
 			return false;
 		}
 
@@ -202,43 +212,6 @@ bool SceneManager::Init(std::string filepath)
 
 		std::string shaderID = pShader->value();
 
-		rapidxml::xml_node<> *pType = pObject->first_node("type");
-		if (nullptr == pType) {
-			std::cerr << "Object type missing" << std::endl;
-			return false;
-		}
-
-		std::string type = pType->value();
-		ObjectType ot = OT_NORMAL;
-
-		if ("normal" == type) {
-			ot = OT_NORMAL;
-		}
-		else if ("skybox" == type) {
-			ot = OT_SKYBOX;
-		}
-		else if ("terrain" == type) {
-			ot = OT_TERRAIN;
-		}
-
-		bool depthTest = true;
-		rapidxml::xml_node<> *pDepthTest = pObject->first_node("depthTest");
-		if (nullptr != pDepthTest) {
-			depthTest = pDepthTest->value() == "true" ? true : false;
-		}
-
-		bool blend = true;
-		rapidxml::xml_node<> *pBlend = pObject->first_node("blend");
-		if (nullptr != pBlend) {
-			blend = pBlend->value() == "true" ? true : false;
-		}
-
-		std::string name = "";
-		rapidxml::xml_node<> *pName = pObject->first_node("name");
-		if (nullptr != pName) {
-			blend = pName->value();
-		}
-
 		rapidxml::xml_node<> *pTextures = pObject->first_node("textures");
 		std::vector<std::string> texture_ids;
 		if (nullptr != pTextures) {
@@ -253,8 +226,6 @@ bool SceneManager::Init(std::string filepath)
 				texture_ids.push_back(pAttribute->value());
 			}
 		}
-
-		
 
 		glm::vec3 pos;
 		rapidxml::xml_node<> *pPosition = pObject->first_node("position");
@@ -304,34 +275,20 @@ bool SceneManager::Init(std::string filepath)
 			color.z = std::stof(pColor->first_node("b")->value());
 		}
 
-		float selfRotateSpeed;
-		rapidxml::xml_node<> *pSelfRotateSpeed = pObject->first_node("selfRotateSpeed");
-
-		if (nullptr == pSelfRotateSpeed) {
-			selfRotateSpeed = 0.1f;
-		}
-		else {
-			selfRotateSpeed = std::stof(pSelfRotateSpeed->value());
-		}
-
-		rapidxml::xml_node<> *pWired = pObject->first_node("wired");
-		bool wired = pWired ? true : false;
-
 		// TODO: TRAJECTORY
 		// TODO: LIGHTS
 
 		SceneObject *object = nullptr;
 
-		if (OT_NORMAL == ot) {
-			object = new SceneObject(pos, rot, scale, depthTest, name);
-			object->SetModel(ResourceManager::GetInstance()->LoadModel(modelID));
-			object->SetShader(ResourceManager::GetInstance()->LoadShader(shaderID));
-			for (std::string texID : texture_ids) {
-				object->AddTexture(ResourceManager::GetInstance()->LoadTexture(texID));
-			}
-
-			m_objects[id] = object;
+		object = new SceneObject(pos, rot, scale);
+		object->SetModel(ResourceManager::GetInstance()->LoadModel(modelID));
+		object->SetShader(ResourceManager::GetInstance()->LoadShader(shaderID));
+		for (std::string texID : texture_ids) {
+			object->AddTexture(ResourceManager::GetInstance()->LoadTexture(texID));
 		}
+
+		m_objects[id] = object;
+		m_octree->Insert(object);
 	}
 	//ambiental light
 	//lights
@@ -351,6 +308,9 @@ void SceneManager::Update()
 
 void SceneManager::Draw()
 {
+	Camera *cam = GetActiveCamera();
+	m_octree->Draw(cam->GetViewMatrix(), cam->GetProjectionMatrix());
+
 	for (auto & obj : m_objects) {
 		obj.second->Draw();
 	}

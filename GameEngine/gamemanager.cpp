@@ -1,5 +1,7 @@
 
 #include "gamemanager.h"
+#include "ResourceManager.h"
+#include "SceneManager.h"
 
 #include <iterator>
 #include <iostream>
@@ -46,7 +48,14 @@ GameManager::GameManager(int width, int height, const std::string & title)
 	//SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
 
 	// TODO: this can be done better
-	m_octree = new Octree(glm::vec3(0), glm::vec3(50));
+
+	ResourceManager *rm = ResourceManager::GetInstance();
+	rm->Init("./res/xmls/resourceManager.xml");
+
+	SceneManager *sm = SceneManager::GetInstance();
+	sm->Init("./res/xmls/sceneManager.xml");
+
+	m_camera = sm->GetActiveCamera();
 }
 
 GameManager::~GameManager()
@@ -95,18 +104,7 @@ void GameManager::Draw(void)
 {
 	Clear(m_background_color.r, m_background_color.g, m_background_color.b, m_background_color.a);
 
-	if (nullptr != m_meshes[0]) {
-		// Some weird bug that causes the first element to not draw
-		m_meshes[0]->Update(m_camera);
-		m_meshes[0]->Draw();
-	}
-
-	for (Mesh *m : m_meshes) {
-		m->Update(m_camera);
-		m->Draw();
-	}
-
-	m_octree->Draw(m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix());
+	SceneManager::GetInstance()->Draw();
 }
 
 void GameManager::ParseInput(void)
@@ -272,16 +270,24 @@ void GameManager::ParseKeyPress(SDL_Keysym key)
 
 void GameManager::ParseKeyPressRelease()
 {
-	m_camera->MoveLeft(m_key_time_pressed.left);
-	m_key_time_pressed.left = 0;
+	if (m_key_time_pressed.left > 0) {
+		m_camera->MoveLeft(m_key_time_pressed.left);
+		m_key_time_pressed.left = 0;
+	}
 
-	m_camera->MoveRight(m_key_time_pressed.right);
-	m_key_time_pressed.right = 0;
+	if (m_key_time_pressed.right > 0) {
+		m_camera->MoveRight(m_key_time_pressed.right);
+		m_key_time_pressed.right = 0;
+	}
 
-	m_camera->MoveForward(m_key_time_pressed.up);
-	m_key_time_pressed.up = 0;
+	if (m_key_time_pressed.up > 0) {
+		m_camera->MoveForward(m_key_time_pressed.up);
+		m_key_time_pressed.up = 0;
+	}
 
-	m_camera->MoveBackwards(m_key_time_pressed.down);
-	m_key_time_pressed.down = 0;
+	if (m_key_time_pressed.down > 0) {
+		m_camera->MoveBackwards(m_key_time_pressed.down);
+		m_key_time_pressed.down = 0;
+	}
 
 }

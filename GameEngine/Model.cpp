@@ -1,9 +1,11 @@
 
-#include "stdafx.h"
 #include "Model.h"
-#include "Vertex.h"
 
 #include <vector>
+#include <algorithm>
+
+#include "transform.h"
+#include "sceneshader.h"
 
 Model::Model() : m_mr(nullptr), m_loaded(false)
 {
@@ -19,9 +21,9 @@ Model::~Model()
 		delete m_mr;
 	}
 
-	glDeleteBuffers(1, &m_vboID);
-	glDeleteBuffers(1, &m_iboID);
-	glDeleteBuffers(1, &m_wiredIboID);
+	glDeleteBuffers(NUM_BUFFERS, m_vbo);
+
+	glDeleteVertexArrays(1, &m_vaoId);
 }
 
 bool Model::Load()
@@ -34,67 +36,61 @@ bool Model::Load()
 		return false;
 	}
 
-	FILE *f =  fopen(m_mr->model_path.c_str(), "r");
+	IndexedModel model = OBJModel(m_mr->model_path).ToIndexedModel();
+	
+	InitMesh(model);
 
-	int numberOfVertices;
-	fscanf(f, "NrVertices: %d\n", &numberOfVertices);
-	if (numberOfVertices <= 0)
-		return false;
-
-
-	// Read vertices
-	std::vector<Vertex> vertices(numberOfVertices);
-	for (int i = 0; i < numberOfVertices; ++i) {
-		fscanf(f, "   %*d. pos:[%f, %f, %f]; norm:[%f, %f, %f]; binorm:[%*f, %*f, %*f]; tgt:[%*f, %*f, %*f]; uv:[%f, %f];\n",
-			&vertices[i].pos.x, &vertices[i].pos.y, &vertices[i].pos.z,
-			&vertices[i].normal.x, &vertices[i].normal.y, &vertices[i].normal.z,
-			&vertices[i].uv.x, &vertices[i].uv.y);
-
-		vertices[i].color = Vector3(1, 1, 1);
-	}
-
-	// Generate and create vbo
-	glGenBuffers(1, &m_vboID);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * numberOfVertices, &vertices[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// Read indices
-	fscanf(f, "NrIndices: %d\n", &m_indicesCount);
-	if (m_indicesCount <= 0) {
-		glDeleteBuffers(1, &m_vboID);
-		return false;
-	}
-
-	std::vector<int> indices(m_indicesCount);
-	for (int i = 0; i < m_indicesCount; i += 3) {
-		fscanf(f, "   %*d.    %d,    %d,    %d\n", &indices[i], &indices[i + 1], &indices[i + 2]);
-	}
-
-	// Generate and create ibo for filled mesh
-	glGenBuffers(1, &m_iboID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * m_indicesCount, &indices[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	// Create ibo buffer for wired mesh
-	m_indicesWiredCount = m_indicesCount * 2;
-	std::vector<int> indicesWired(m_indicesWiredCount);
-	for (int i = 0, wiredCount = 0; i < m_indicesCount; i += 3, wiredCount += 6) {
-		indicesWired[wiredCount] = indices[i];
-		indicesWired[wiredCount + 1] = indices[i + 1];
-		indicesWired[wiredCount + 2] = indices[i + 1];
-		indicesWired[wiredCount + 3] = indices[i + 2];
-		indicesWired[wiredCount + 4] = indices[i + 2];
-		indicesWired[wiredCount + 5] = indices[i];
-	}
-
-	// Generate and create ibo for wired mesh
-	glGenBuffers(1, &m_wiredIboID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_wiredIboID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * m_indicesWiredCount, &indicesWired[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	m_loaded = true;
 	return true;
+}
+
+void Model::Draw()
+{
+	glBindVertexArray(m_vaoId);
+
+	glDrawElements(GL_TRIANGLES, m_indices_count, GL_UNSIGNED_INT, 0);
+
+	glBindVertexArray(0);
+}
+
+void Model::InitMesh(const IndexedModel & model)
+{
+	m_indices_count = model.indices.size();
+
+	glGenVertexArrays(1, &m_vaoId);
+	glBindVertexArray(m_vaoId);
+
+	glGenBuffers(NUM_BUFFERS, m_vbo);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo[POSITION_VB]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(model.positions[0]) * model.positions.size(), &model.positions[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(POSITION_VB);
+	glVertexAttribPointer(POSITION_VB, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo[TEXCOORD_VB]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(model.texCoords[0]) * model.texCoords.size(), &model.texCoords[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(TEXCOORD_VB);
+	glVertexAttribPointer(TEXCOORD_VB, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo[NORMAL_VB]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(model.normals[0]) * model.normals.size(), &model.normals[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(NORMAL_VB);
+	glVertexAttribPointer(NORMAL_VB, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vbo[INDEX_VB]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(model.indices[0]) * model.indices.size(), &model.indices[0], GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+
+	// Compute bounding box
+	m_bb.bb_min = glm::vec3(FLT_MAX);
+	m_bb.bb_max = glm::vec3(FLT_MIN);
+	for (glm::vec3 vertex : model.positions) {
+		m_bb.bb_min.x = std::min(m_bb.bb_min.x, vertex.x);
+		m_bb.bb_min.y = std::min(m_bb.bb_min.y, vertex.y);
+		m_bb.bb_min.z = std::min(m_bb.bb_min.z, vertex.z);
+
+		m_bb.bb_max.x = std::max(m_bb.bb_max.x, vertex.x);
+		m_bb.bb_max.y = std::max(m_bb.bb_max.y, vertex.y);
+		m_bb.bb_max.z = std::max(m_bb.bb_max.z, vertex.z);
+	}
 }

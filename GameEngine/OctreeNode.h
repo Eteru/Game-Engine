@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mesh.h"
+#include "SceneObject.h"
 
 struct OctreeNode
 {
@@ -14,7 +14,7 @@ struct OctreeNode
 	float m_sq_radius;
 	glm::vec3 m_center;
 
-	std::vector<Mesh *> m_objects;
+	std::vector<SceneObject *> m_objects;
 	std::vector<OctreeNode *> m_children;
 	std::vector<BoundingBox> m_children_bbs;
 

@@ -1,8 +1,10 @@
 #pragma once
 
+#include "Structs.h"
+#include "obj_loader.h"
+
 #include <cinttypes>
 #include <string>
-#include "Structs.h"
 
 class Model
 {
@@ -13,34 +15,39 @@ public:
 	~Model();
 
 	bool Load();
+	void Draw();
+
 
 	inline bool IsLoaded()
 	{
 		return m_loaded;
 	}
 
-	inline GLuint GetVBO() const
+	inline GLuint GetVAO() const
 	{
-		return m_vboID;
+		return m_vaoId;
 	}
 
-	inline GLuint GetIBO(bool is_wired) const
+	inline uint32_t GetIndicesCount() const
 	{
-		return (true == is_wired) ? m_wiredIboID : m_iboID;
+		return m_indices_count;
 	}
 
-	inline uint32_t GetIBOCount(bool is_wired) const
+	inline const BoundingBox & GetBoundingBox() const
 	{
-		return (true == is_wired) ? m_indicesWiredCount : m_indicesCount;
+		return m_bb;
 	}
 
 private:
-	bool m_loaded;
-	GLuint m_iboID;
-	GLuint m_wiredIboID;
-	GLuint m_vboID;
-	uint32_t m_indicesCount;
-	uint32_t m_indicesWiredCount;
+	enum BUFFER_TYPE { POSITION_VB = 0, TEXCOORD_VB, NORMAL_VB, INDEX_VB, NUM_BUFFERS };
 
+	bool m_loaded;
+	GLuint m_vaoId;
+	GLuint m_vbo[NUM_BUFFERS];
+	uint32_t m_indices_count;
+
+	BoundingBox m_bb;
 	ModelResource *m_mr;
+
+	void InitMesh(const IndexedModel & model);
 };
