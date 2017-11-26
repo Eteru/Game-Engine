@@ -14,14 +14,6 @@ SceneManager::~SceneManager()
 		delete m_instance;
 	}
 
-	for (auto it : m_cameras) {
-		delete it.second;
-	}
-
-	for (auto it : m_objects) {
-		delete it.second;
-	}
-
 	delete m_octree;
 }
 
@@ -168,7 +160,7 @@ bool SceneManager::Init(std::string filepath)
 			cfar = std::stof(pFar->value());
 		}
 
-		m_cameras[id] = new Camera(pos, target, up, fov, 1.7777f, cnear, cfar, speed, sensitivity);
+		m_cameras[id] = std::shared_ptr<Camera>(new Camera(pos, target, up, fov, 1.7777f, cnear, cfar, speed, sensitivity));
 	}
 
 	rapidxml::xml_node<> *pActiveCamera = pRoot->first_node("activeCamera");
@@ -287,7 +279,7 @@ bool SceneManager::Init(std::string filepath)
 			object->AddTexture(ResourceManager::GetInstance()->LoadTexture(texID));
 		}
 
-		m_objects[id] = object;
+		m_objects[id] = std::shared_ptr<SceneObject>(object);
 		m_octree->Insert(object);
 	}
 	//ambiental light
@@ -310,8 +302,5 @@ void SceneManager::Draw()
 {
 	Camera *cam = GetActiveCamera();
 	m_octree->Draw(cam->GetViewMatrix(), cam->GetProjectionMatrix());
-
-	for (auto & obj : m_objects) {
-		obj.second->Draw();
-	}
+	m_octree->DrawContainedObjetcs(cam->GetFrustrum());
 }

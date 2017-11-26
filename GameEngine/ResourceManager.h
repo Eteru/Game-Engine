@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <string>
 #include <iostream>
 #include <rapidxml\rapidxml.hpp>
@@ -28,13 +29,13 @@ public:
 private:
 	static ResourceManager *m_instance;
 
-	std::map<std::string, ModelResource*> m_model_resource_map;
-	std::map<std::string, ShaderResource*> m_shader_resource_map;
-	std::map<std::string, TextureResource*> m_texture_resource_map;
+	std::map<std::string, std::shared_ptr<ModelResource>> m_model_resource_map;
+	std::map<std::string, std::shared_ptr<ShaderResource>> m_shader_resource_map;
+	std::map<std::string, std::shared_ptr<TextureResource>> m_texture_resource_map;
 
-	std::map<std::string, Model*> m_model_map;
-	std::map<std::string, Shader*> m_shader_map;
-	std::map<std::string, Texture*> m_texture_map;
+	std::map<std::string, std::shared_ptr<Model>> m_model_map;
+	std::map<std::string, std::shared_ptr<Shader>> m_shader_map;
+	std::map<std::string, std::shared_ptr<Texture>> m_texture_map;
 
 	ResourceManager();
 };

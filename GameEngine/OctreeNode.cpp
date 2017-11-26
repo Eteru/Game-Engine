@@ -89,3 +89,42 @@ void OctreeNode::InitGL()
 
 	glBindVertexArray(0);
 }
+
+void OctreeNode::DrawObjects()
+{
+	for (SceneObject *obj : m_objects) {
+		obj->Draw();
+	}
+}
+
+void OctreeNode::Draw(const Frustrum & frustrum, bool draw)
+{
+	if (true == draw)
+		DrawObjects();
+
+	for (int i = 0; i < CHILDREN_COUNT; ++i) {
+		if (nullptr == m_children[i]) {
+			continue;
+		}
+
+		if (true == draw) {
+			m_children[i]->Draw(frustrum, true);
+		}
+		else {
+			Frustrum::ObjectLocation type = frustrum.Contains(m_children_bbs[i]);
+
+			switch (type)
+			{
+			case Frustrum::INSIDE_FRUSTRUM:
+				m_children[i]->Draw(frustrum, true);
+				break;
+			case Frustrum::INTERSECTS_FRUSTRUM:
+				m_children[i]->Draw(frustrum, true);
+				break;
+			case Frustrum::OUTSIDE_FRUSTRUM:
+			default:
+				return;
+			}
+		}
+	}
+}

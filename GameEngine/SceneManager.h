@@ -23,7 +23,7 @@ public:
 
 	inline Camera *GetActiveCamera()
 	{
-		return m_cameras[m_active_camera];
+		return m_cameras[m_active_camera].get();
 	}
 
 private:
@@ -31,8 +31,8 @@ private:
 
 	Octree *m_octree;
 	glm::vec3 m_background_color;
-	std::map<std::string, Camera *> m_cameras;
-	std::map<std::string, SceneObject *> m_objects;
+	std::map<std::string, std::shared_ptr<Camera>> m_cameras;
+	std::map<std::string, std::shared_ptr<SceneObject>> m_objects;
 	std::string m_active_camera;
 
 	SceneManager();

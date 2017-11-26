@@ -46,6 +46,15 @@
     <ClCompile Include="SceneObject.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Frustrum.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicShader.h">
@@ -97,6 +106,12 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="SceneObject.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustrum.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

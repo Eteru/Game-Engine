@@ -11,6 +11,7 @@ public:
 
 	void Insert(SceneObject *obj);
 	void Draw(const glm::mat4 & V, const glm::mat4 & P) const;
+	void DrawContainedObjetcs(const Frustrum & frustrum) const;
 
 private:
 	GLuint m_vbo;

@@ -121,6 +121,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicShader.cpp" />
+    <ClCompile Include="camera.cpp" />
+    <ClCompile Include="Frustrum.cpp" />
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
@@ -128,6 +130,7 @@
     <ClCompile Include="obj_loader.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="OctreeNode.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneObject.cpp" />
@@ -139,12 +142,14 @@
   <ItemGroup>
     <ClInclude Include="BasicShader.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="Frustrum.h" />
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="obj_loader.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="OctreeNode.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SceneObject.h" />

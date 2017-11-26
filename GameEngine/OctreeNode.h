@@ -21,7 +21,10 @@ struct OctreeNode
 	OctreeNode(glm::vec3 center, float r);
 	~OctreeNode();
 
+	void Draw(const Frustrum & frustrum, bool draw = false);
+
 private:
 	void InitGL();
+	void DrawObjects();
 };
 

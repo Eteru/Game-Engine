@@ -14,36 +14,6 @@ ResourceManager::~ResourceManager()
 	if (nullptr != m_instance) {
 		delete m_instance;
 	}
-
-	for (auto & it : m_model_resource_map) {
-		delete it.second;
-		it.second = nullptr;
-	}
-
-	for (auto & it : m_texture_resource_map) {
-		delete it.second;
-		it.second = nullptr;
-	}
-
-	for (auto & it : m_shader_resource_map) {
-		delete it.second;
-		it.second = nullptr;
-	}
-
-	for (auto & it : m_model_map) {
-		delete it.second;
-		it.second = nullptr;
-	}
-
-	for (auto & it : m_texture_map) {
-		delete it.second;
-		it.second = nullptr;
-	}
-
-	for (auto & it : m_shader_map) {
-		delete it.second;
-		it.second = nullptr;
-	}
 }
 
 ResourceManager * ResourceManager::GetInstance()
@@ -61,7 +31,7 @@ Model * ResourceManager::GetModel(std::string id)
 		return nullptr;
 	}
 
-	return m_model_map[id];
+	return m_model_map[id].get();
 }
 
 Texture * ResourceManager::GetTexture(std::string id)
@@ -70,7 +40,7 @@ Texture * ResourceManager::GetTexture(std::string id)
 		return nullptr;
 	}
 
-	return m_texture_map[id];
+	return m_texture_map[id].get();
 }
 
 Shader * ResourceManager::GetShader(std::string id)
@@ -79,7 +49,7 @@ Shader * ResourceManager::GetShader(std::string id)
 		return nullptr;
 	}
 
-	return m_shader_map[id];
+	return m_shader_map[id].get();
 }
 
 bool ResourceManager::Init(std::string filepath)
@@ -120,7 +90,7 @@ bool ResourceManager::Init(std::string filepath)
 		mr->model_path = std::string(pField->value());
 		//}
 
-		m_model_resource_map[mr->id] = mr;
+		m_model_resource_map[mr->id] = std::shared_ptr<ModelResource>(mr);
 	}
 
 	// shaders
@@ -140,7 +110,7 @@ bool ResourceManager::Init(std::string filepath)
 		rapidxml::xml_node<> *pFS = pNode->first_node("fs");
 		sr->fs_path = std::string(pFS->value());
 
-		m_shader_resource_map[sr->id] = sr;
+		m_shader_resource_map[sr->id] = std::shared_ptr<ShaderResource>(sr);
 	}
 
 	// textures
@@ -214,7 +184,7 @@ bool ResourceManager::Init(std::string filepath)
 			return false;
 		}
 
-		m_texture_resource_map[tr->id] = tr;
+		m_texture_resource_map[tr->id] = std::shared_ptr<TextureResource>(tr);
 	}
 
 	delete string;
@@ -229,12 +199,12 @@ Model *ResourceManager::LoadModel(std::string id)
 	}
 
 	if (m_model_map.find(id) == m_model_map.end()) {
-		m_model_map[id] = new Model(m_model_resource_map[id]);
+		m_model_map[id] = std::shared_ptr<Model>(new Model(m_model_resource_map[id].get()));
 	}
 
 	m_model_map[id]->Load();
 
-	return m_model_map[id];
+	return m_model_map[id].get();
 }
 
 Shader *ResourceManager::LoadShader(std::string id)
@@ -247,10 +217,10 @@ Shader *ResourceManager::LoadShader(std::string id)
 		switch (m_shader_resource_map[id]->type) 
 		{
 		case ST_BASIC:
-			m_shader_map[id] = new BasicShader(m_shader_resource_map[id]);
+			m_shader_map[id] = std::shared_ptr<Shader>(new BasicShader(m_shader_resource_map[id].get()));
 			break;
 		case ST_SCENE:
-			m_shader_map[id] = new SceneShader(m_shader_resource_map[id]);
+			m_shader_map[id] = std::shared_ptr<Shader>(new SceneShader(m_shader_resource_map[id].get()));
 			break;
 		}
 		
@@ -258,7 +228,7 @@ Shader *ResourceManager::LoadShader(std::string id)
 
 	m_shader_map[id]->Load();
 
-	return m_shader_map[id];
+	return m_shader_map[id].get();
 }
 
 Texture *ResourceManager::LoadTexture(std::string id)
@@ -268,10 +238,10 @@ Texture *ResourceManager::LoadTexture(std::string id)
 	}
 
 	if (m_texture_map.find(id) == m_texture_map.end()) {
-		m_texture_map[id] = new Texture(m_texture_resource_map[id]);
+		m_texture_map[id] = std::shared_ptr<Texture>(new Texture(m_texture_resource_map[id].get()));
 	}
 
 	m_texture_map[id]->Load();
 
-	return m_texture_map[id];
+	return m_texture_map[id].get();
 }

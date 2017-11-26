@@ -97,4 +97,9 @@ void Octree::DrawNodeGL(const OctreeNode * node, const glm::mat4 & M, const glm:
 	glBindVertexArray(0);
 }
 
+void Octree::DrawContainedObjetcs(const Frustrum & frustrum) const
+{
+	m_root->Draw(frustrum, false);
+}
+
 

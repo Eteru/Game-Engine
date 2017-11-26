@@ -5,29 +5,23 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <iostream>
 
+#include "Frustrum.h"
+
+#define ANG2RAD 3.14159265358979323846/180.0
+
 class Camera
 {
 public:
-	Camera() 
-		: m_position(glm::vec3(0, 0, -3)), m_forward(glm::vec3(0, 0, 1)), m_up(glm::vec3(0, 1, 0)),
-		m_fov(70.f), m_zNear(0.01f), m_zFar(1000.f), m_camera_speed(0.005f), m_mouse_sensitivity(0.001f)
-	{
-		m_perspective = glm::perspective(70.f, 1.33f, 0.01f, 1000.f);
-	}
+	Camera();
 
 	Camera(const glm::vec3 & pos, const glm::vec3 & forward,
 		const glm::vec3 & up, float fov, float ratio, float zNear, float zFar,
-		float camera_speed, float sensitivity)
-		: m_position(pos), m_forward(forward), m_up(up), m_fov(fov), m_zNear(zNear),
-		m_zFar(zFar), m_camera_speed(camera_speed), m_mouse_sensitivity(sensitivity)
-	{
-		m_perspective = glm::perspective(fov, ratio, zNear, zFar);
-	}
+		float camera_speed, float sensitivity);
 
 	virtual ~Camera()
 	{
 	}
-
+	
 	inline glm::vec3 GetPosition(void) const
 	{
 		return m_position;
@@ -83,93 +77,34 @@ public:
 		return m_zFar;
 	}
 
-	inline void MoveForward(uint32_t count)
-	{
-		glm::vec3 new_pos = m_position + count * m_camera_speed * m_forward;
 
-		if (new_pos.x < 0) {
-			new_pos.x = 0;
-		} 
-		if (new_pos.y < 0) {
-			new_pos.y = 0;
-		}
-		if (new_pos.z < 0) {
-			new_pos.z = 0;
-		}
+	void InitPlanes();
 
-		m_position = new_pos;
-	}
+	Frustrum & GetFrustrum();
 
-	inline void MoveBackwards(uint32_t count)
-	{
-		glm::vec3 new_pos = m_position - count * m_camera_speed * m_forward;
-
-		if (new_pos.x < 0) {
-			new_pos.x = 0;
-		}
-		if (new_pos.y < 0) {
-			new_pos.y = 0;
-		}
-		if (new_pos.z < 0) {
-			new_pos.z = 0;
-		}
-
-		m_position = new_pos;
-	}
-
-	inline void MoveLeft(uint32_t count)
-	{
-		glm::vec3 new_pos = m_position - glm::normalize(glm::cross(m_forward, m_up)) * (count * m_camera_speed);
-
-		if (new_pos.x < 0) {
-			new_pos.x = 0;
-		}
-		if (new_pos.y < 0) {
-			new_pos.y = 0;
-		}
-		if (new_pos.z < 0) {
-			new_pos.z = 0;
-		}
-
-		m_position = new_pos;
-	}
-
-	inline void MoveRight(uint32_t count)
-	{
-		glm::vec3 new_pos = m_position + glm::normalize(glm::cross(m_forward, m_up)) * (count * m_camera_speed);
-
-		if (new_pos.x < 0) {
-			new_pos.x = 0;
-		}
-		if (new_pos.y < 0) {
-			new_pos.y = 0;
-		}
-		if (new_pos.z < 0) {
-			new_pos.z = 0;
-		}
-
-		m_position = new_pos;
-	}
-
-	inline void Rotate(int xrel, int yrel)
-	{
-		if (xrel != 0)
-			m_forward = glm::rotate(m_forward, m_mouse_sensitivity * -xrel, glm::vec3(0.f, 1.f, 0.f));
-
-		if (yrel != 0)
-			m_forward = glm::rotate(m_forward, m_mouse_sensitivity * -yrel, glm::vec3(1.f, 0.f, 0.f));
-	}
+	void MoveForward(uint32_t count);
+	void MoveBackwards(uint32_t count);
+	void MoveLeft(uint32_t count);
+	void MoveRight(uint32_t count);
+	void Rotate(int xrel, int yrel);
 
 private:
 	float m_camera_speed;
 	float m_mouse_sensitivity;
 	float m_fov;
+	float m_ratio;
 	float m_zNear;
 	float m_zFar;
+	float m_hFar;
+	float m_wFar;
+	float m_hNear;
+	float m_wNear;
 
 	glm::mat4 m_perspective;
 	glm::vec3 m_position;
 	glm::vec3 m_forward;
 	glm::vec3 m_up;
+
+	Frustrum m_frustrum;
 };
 
