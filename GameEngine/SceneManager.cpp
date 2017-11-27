@@ -303,4 +303,6 @@ void SceneManager::Draw()
 	Camera *cam = GetActiveCamera();
 	m_octree->Draw(cam->GetViewMatrix(), cam->GetProjectionMatrix());
 	m_octree->DrawContainedObjetcs(cam->GetFrustrum());
+
+	cam->GetFrustrum().Draw(cam->GetViewMatrix(), cam->GetProjectionMatrix());
 }

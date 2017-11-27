@@ -20,10 +20,10 @@ Camera::Camera(const glm::vec3 & pos, const glm::vec3 & forward, const glm::vec3
 
 void Camera::InitPlanes()
 {
-	m_hNear = 2.f * tan(ANG2RAD * m_fov * .5f) * m_zNear;
+	m_hNear = 2.f * tan(m_fov * .5f) * m_zNear;
 	m_wNear = m_hNear * m_ratio;
 
-	m_hFar = 2.f * tan(ANG2RAD * m_fov * .5f) * m_zFar;
+	m_hFar = 2.f * tan(m_fov * .5f) * m_zFar;
 	m_wFar = m_hFar * m_ratio;
 }
 

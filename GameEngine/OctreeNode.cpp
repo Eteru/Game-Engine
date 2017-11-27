@@ -44,7 +44,6 @@ OctreeNode::~OctreeNode()
 			delete node;
 	}
 
-
 	glDeleteBuffers(1, &m_vbo);
 	glDeleteBuffers(1, &m_ibo);
 	glDeleteVertexArrays(1, &m_vao);
