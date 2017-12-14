@@ -14,8 +14,9 @@ public:
 	Frustrum();
 	~Frustrum();
 
-	void SetPlanes(glm::vec3 ftl, glm::vec3 ftr, glm::vec3 fbl, glm::vec3 fbr,
-		glm::vec3 ntl, glm::vec3 ntr, glm::vec3 nbl, glm::vec3 nbr);
+	void SetPlanes(const glm::vec3 & ftl, const glm::vec3 & ftr, const glm::vec3 & fbl,
+		const glm::vec3 & fbr, const glm::vec3 & ntl, const glm::vec3 & ntr,
+		const glm::vec3 & nbl, const glm::vec3 & nbr);
 	ObjectLocation Contains(const BoundingBox & bb) const;
 
 	void Draw(const glm::mat4 & V, const glm::mat4 & P);

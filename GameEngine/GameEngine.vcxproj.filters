@@ -114,6 +114,9 @@
     <ClInclude Include="Frustrum.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\basic_shader.fs">

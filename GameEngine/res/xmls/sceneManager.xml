@@ -14,9 +14,9 @@
 				<z>1</z>
 			</position>
 			<target>
-				<x>0</x>
+				<x>1</x>
 				<y>0</y>
-				<z>1</z>
+				<z>0</z>
 			</target>
 			<up>
 				<x>0</x>
@@ -27,7 +27,7 @@
 			<sensitivity>0.001</sensitivity>
 			<fov>45</fov>
 			<near>0.2</near>
-			<far>10000</far>
+			<far>1000</far>
 		</camera>
 		<!-- eventual si alte cameras -->
 	</cameras>

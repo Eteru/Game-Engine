@@ -21,7 +21,9 @@ Frustrum::~Frustrum()
 	glDeleteVertexArrays(1, &m_vao);
 }
 
-void Frustrum::SetPlanes(glm::vec3 ftl, glm::vec3 ftr, glm::vec3 fbl, glm::vec3 fbr, glm::vec3 ntl, glm::vec3 ntr, glm::vec3 nbl, glm::vec3 nbr)
+void Frustrum::SetPlanes(const glm::vec3 & ftl, const glm::vec3 & ftr, const glm::vec3 & fbl,
+	const glm::vec3 & fbr, const glm::vec3 & ntl, const glm::vec3 & ntr,
+	const glm::vec3 & nbl, const glm::vec3 & nbr)
 {
 	m_planes[TOP].Init(ntr, ntl, ftl);
 	m_planes[BOTTOM].Init(nbl, nbr, fbr);
@@ -57,18 +59,36 @@ void Frustrum::SetPlanes(glm::vec3 ftl, glm::vec3 ftr, glm::vec3 fbl, glm::vec3 
 
 Frustrum::ObjectLocation Frustrum::Contains(const BoundingBox & bb) const
 {
+	/*std::vector<glm::vec3> verts = {
+		bb.bb_min,
+		glm::vec3(bb.bb_max.x, bb.bb_min.y, bb.bb_min.z),
+		glm::vec3(bb.bb_min.x, bb.bb_max.y, bb.bb_min.z),
+		glm::vec3(bb.bb_min.x, bb.bb_min.y, bb.bb_max.z),
+		glm::vec3(bb.bb_max.x, bb.bb_max.y, bb.bb_min.z),
+		glm::vec3(bb.bb_max.x, bb.bb_min.y, bb.bb_max.z),
+		glm::vec3(bb.bb_min.x, bb.bb_max.y, bb.bb_max.z),
+		bb.bb_max
+	};*/
+
 	for (const Plane & p : m_planes) {
+		/*for (const glm::vec3 & v : verts) {
+			if (p.Distance(v) > 0) {
+				std::cerr << "Intersects" << std::endl;
+				return INTERSECTS_FRUSTRUM;
+			}
+		}*/
+
 		if (p.Distance(bb.bb_max) < 0) {
-			std::cerr << "Outside" << std::endl;
+			//std::cerr << "Outside" << std::endl;
 			return OUTSIDE_FRUSTRUM;
 		}
 		else if (p.Distance(bb.bb_min) < 0) {
-			std::cerr << "Intersects" << std::endl;
+			//std::cerr << "Intersects" << std::endl;
 			return INTERSECTS_FRUSTRUM;
 		}
 	}
 
-	std::cerr << "Inside" << std::endl;
+	//std::cerr << "Inside" << std::endl;
 
 	return INSIDE_FRUSTRUM;
 }

@@ -7,6 +7,7 @@
 
 #include "camera.h"
 #include "Octree.h"
+#include "GUI.h"
 
 class GameManager
 {
@@ -45,19 +46,19 @@ private:
 		uint32_t right;
 	};
 
-	void ParseKeyPress(SDL_Keysym key);
-
-	void ParseKeyPressRelease();
-
-	SDL_Window *m_window;
-	SDL_GLContext m_glContext;
-
 	bool m_windowClosed;
 	uint32_t m_width, m_height;
 
-	Camera *m_camera;
+	SDL_bool m_lock_cursor;
+	SDL_Window *m_window;
+	SDL_GLContext m_glContext;
 
+	GUI *m_gui;
+	Camera *m_camera;
 	glm::vec4 m_background_color;
 	KeyTimePress m_key_time_pressed;
+
+	void ParseKeyPress(SDL_Keysym key);
+	void ParseKeyPressRelease();
 };
 

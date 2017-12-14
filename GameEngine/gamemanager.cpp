@@ -11,12 +11,12 @@
 #include <rapidxml\rapidxml_print.hpp>
 
 GameManager::GameManager(int width, int height, const std::string & title)
-	: m_windowClosed(false), m_background_color(0.15f, 0.15f, 0.f, 1.f), m_width(width), m_height(height)
+	: m_windowClosed(false), m_lock_cursor(SDL_TRUE), m_background_color(0.15f, 0.15f, 0.f, 1.f), m_width(width), m_height(height)
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
 
 	// Record mouse movement
-	SDL_SetRelativeMouseMode(SDL_TRUE);
+	SDL_SetRelativeMouseMode(m_lock_cursor);
 
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
@@ -30,6 +30,7 @@ GameManager::GameManager(int width, int height, const std::string & title)
 		SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
 
 	m_glContext = SDL_GL_CreateContext(m_window);
+	m_gui = new GUI(m_window, width, height);
 
 	GLenum status = glewInit();
 
@@ -60,7 +61,8 @@ GameManager::GameManager(int width, int height, const std::string & title)
 
 GameManager::~GameManager()
 {
-	DumpSceneToFile("scene.xml");
+	delete m_gui;
+	//DumpSceneToFile("scene.xml");
 
 	SDL_GL_DeleteContext(m_glContext);
 	SDL_DestroyWindow(m_window);
@@ -89,9 +91,10 @@ void GameManager::Run(void)
 	uint32_t next_time = SDL_GetTicks() + TICK_INTERVAL;
 
 	while (false == m_windowClosed) {
+		ParseInput();
+
 		Draw();
 
-		ParseInput();		
 
 		SDL_GL_SwapWindow(m_window);
 
@@ -105,6 +108,7 @@ void GameManager::Draw(void)
 	Clear(m_background_color.r, m_background_color.g, m_background_color.b, m_background_color.a);
 
 	SceneManager::GetInstance()->Draw();
+	m_gui->drawAll();
 }
 
 void GameManager::ParseInput(void)
@@ -129,6 +133,8 @@ void GameManager::ParseInput(void)
 		default:
 			break;
 		}
+
+		m_gui->onEvent(e);
 	}
 
 	ParseKeyPressRelease();
@@ -244,6 +250,9 @@ void GameManager::ParseKeyPress(SDL_Keysym key)
 {
 	switch (key.sym)
 	{
+	case SDLK_l:
+		m_lock_cursor = m_lock_cursor == SDL_TRUE ? SDL_FALSE : SDL_TRUE;
+		SDL_SetRelativeMouseMode(m_lock_cursor);
 	case SDLK_a:
 	case SDLK_LEFT:
 		++m_key_time_pressed.left;
