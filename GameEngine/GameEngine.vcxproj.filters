@@ -55,6 +55,9 @@
     <ClCompile Include="Plane.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="ScriptingModule.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicShader.h">
@@ -117,6 +120,9 @@
     <ClInclude Include="GUI.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptingModule.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\basic_shader.fs">
@@ -131,6 +137,9 @@
     <None Include="res\scene_shader.vs">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="res\scripts\script.py">
+      <Filter>Scripts</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
@@ -142,5 +151,19 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{0ac7cbcd-6c5f-416d-b491-70c3a4ddfce5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{f67ae719-f041-48c1-9522-95e7719068a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{f1ca5d21-a7c8-433f-9b9e-7d9a7ca1e052}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="resources\xmls\resourceManager.xml">
+      <Filter>Resources</Filter>
+    </Xml>
+    <Xml Include="resources\xmls\sceneManager.xml">
+      <Filter>Resources</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

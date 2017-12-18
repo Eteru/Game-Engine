@@ -84,7 +84,7 @@ public:
 
 		cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
 
-		printf("The current working directory is %s", cCurrentPath);
+		std::cout << "The current working directory is " << cCurrentPath << std::endl;
 
 		std::vector<std::pair<int, std::string>>
 			icons = loadImageDirectory(mNVGContext, "resources/icons");
@@ -286,7 +286,8 @@ public:
 		performLayout(mNVGContext);
 	}
 
-	~GUI() {
+	~GUI()
+	{
 	}
 
 	virtual bool keyboardEvent(int key, int scancode, int action, int modifiers)
@@ -294,11 +295,6 @@ public:
 		if (Screen::keyboardEvent(key, scancode, action, modifiers))
 			return true;
 
-		//if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		// {
-		//    setVisible(false);
-		//    return true;
-		//}
 		return false;
 	}
 
@@ -318,6 +314,13 @@ public:
 	virtual void drawContents()
 	{
 	}
+
+	void MessageBoxAsk(const std::string & title, const std::string & msg)
+	{
+		add<MessageDialog>(MessageDialog::Type::Warning, title, msg, "Yes", "No", true)
+			.withCallback([](int result) { cout << "Dialog result: " << result << endl; });
+	}
+
 private:
 	nanogui::ProgressBar *mProgress;
 };

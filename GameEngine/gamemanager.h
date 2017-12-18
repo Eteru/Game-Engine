@@ -8,6 +8,7 @@
 #include "camera.h"
 #include "Octree.h"
 #include "GUI.h"
+#include "ScriptingModule.h"
 
 class GameManager
 {
@@ -54,6 +55,7 @@ private:
 	SDL_GLContext m_glContext;
 
 	GUI *m_gui;
+	ScriptingModule *m_scripts;
 	Camera *m_camera;
 	glm::vec4 m_background_color;
 	KeyTimePress m_key_time_pressed;

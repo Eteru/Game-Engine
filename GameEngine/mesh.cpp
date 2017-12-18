@@ -10,7 +10,7 @@ Mesh::Mesh(const std::string & filename)
 
 	InitMesh(model);
 
-	m_shader = ResourceManager::GetInstance()->GetShader("./res/scene_shader");
+	m_shader = ResourceManager::GetInstance()->GetShader("./resources/scene_shader");
 }
 
 Mesh::Mesh(const Mesh & obj)

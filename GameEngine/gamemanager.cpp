@@ -51,17 +51,22 @@ GameManager::GameManager(int width, int height, const std::string & title)
 	// TODO: this can be done better
 
 	ResourceManager *rm = ResourceManager::GetInstance();
-	rm->Init("./res/xmls/resourceManager.xml");
+	rm->Init("./resources/xmls/resourceManager.xml");
 
 	SceneManager *sm = SceneManager::GetInstance();
-	sm->Init("./res/xmls/sceneManager.xml");
+	sm->Init("./resources/xmls/sceneManager.xml");
 
 	m_camera = sm->GetActiveCamera();
+
+	m_scripts = new ScriptingModule("resources.scripts.script");
+
+	m_gui->MessageBoxAsk("Script and message box", m_scripts->GetWelcomeMessage("welcome_message"));
 }
 
 GameManager::~GameManager()
 {
 	delete m_gui;
+	delete m_scripts;
 	//DumpSceneToFile("scene.xml");
 
 	SDL_GL_DeleteContext(m_glContext);
