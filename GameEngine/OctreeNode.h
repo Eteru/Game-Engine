@@ -22,6 +22,7 @@ struct OctreeNode
 	~OctreeNode();
 
 	void Draw(const Frustrum & frustrum, bool draw = false);
+	bool IsInside(const glm::vec3 & point) const;
 
 private:
 	void InitGL();

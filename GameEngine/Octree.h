@@ -11,7 +11,8 @@ public:
 
 	void Insert(SceneObject *obj);
 	void Draw(const glm::mat4 & V, const glm::mat4 & P) const;
-	void DrawContainedObjetcs(const Frustrum & frustrum) const;
+	void DrawContainedObjects(const Frustrum & frustrum) const;
+	bool CheckCameraCollision(const glm::vec3 & point) const;
 
 private:
 	GLuint m_vbo;

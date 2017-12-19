@@ -44,12 +44,7 @@ GameManager::GameManager(int width, int height, const std::string & title)
 	// Cull back faces
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-
-	// Set full screen
-	//SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
-
-	// TODO: this can be done better
-
+	
 	ResourceManager *rm = ResourceManager::GetInstance();
 	rm->Init("./resources/xmls/resourceManager.xml");
 
@@ -60,7 +55,7 @@ GameManager::GameManager(int width, int height, const std::string & title)
 
 	m_scripts = new ScriptingModule("resources.scripts.script");
 
-	m_gui->MessageBoxAsk("Script and message box", m_scripts->GetWelcomeMessage("welcome_message"));
+	//m_gui->MessageBoxAsk("Script and message box", m_scripts->GetWelcomeMessage());
 }
 
 GameManager::~GameManager()
@@ -80,30 +75,17 @@ void GameManager::Clear(float r, float g, float b, float a)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-static inline uint32_t time_left(uint32_t next_time)
-{
-	uint32_t now = SDL_GetTicks();
-
-	if (next_time <= now)
-		return 0;
-	else
-		return next_time - now;
-}
-
 void GameManager::Run(void)
 {
 	static const uint16_t TICK_INTERVAL = 15;
 	uint32_t next_time = SDL_GetTicks() + TICK_INTERVAL;
 
 	while (false == m_windowClosed) {
-		ParseInput();
-
+		Update();
 		Draw();
 
-
 		SDL_GL_SwapWindow(m_window);
-
-		SDL_Delay(time_left(next_time));
+		SDL_Delay(TimeLeft(next_time));
 		next_time += TICK_INTERVAL;
 	}
 }
@@ -114,6 +96,18 @@ void GameManager::Draw(void)
 
 	SceneManager::GetInstance()->Draw();
 	m_gui->drawAll();
+	glEnable(GL_DEPTH_TEST); // drawAll disables it for some reason
+}
+
+void GameManager::Update(void)
+{
+	ParseInput();
+	SceneManager::GetInstance()->Update();
+
+	const glm::vec3 & point = SceneManager::GetInstance()->GetActiveCamera()->GetPosition();
+	if (true == SceneManager::GetInstance()->CheckPointCollision(point)) {
+		m_gui->MessageBoxAlert("Collision detected", m_scripts->GetCollisionMessage(point.x, point.y, point.z));
+	}
 }
 
 void GameManager::ParseInput(void)
@@ -166,8 +160,6 @@ bool GameManager::DumpSceneToFile(const std::string & filname)
 	doc.append_node(decl);
 
 	xml_node<>* root = doc.allocate_node(node_element, "scene");
-	//root->append_attribute(doc.allocate_attribute("version", "1.0"));
-	//root->append_attribute(doc.allocate_attribute("type", "example"));
 	
 	xml_node<>* window = doc.allocate_node(node_element, "window");
 	std::string w = std::to_string(m_width);

@@ -19,10 +19,21 @@ public:
 	void Clear(float r, float g, float b, float a);
 	void Run(void);
 	void Draw(void);
+	void Update(void);
 	void ParseInput(void);
 	bool IsWindowClosed(void);
 	bool LoadSceneFromFile(const std::string & filname);
 	bool DumpSceneToFile(const std::string & filname);
+
+	static inline uint32_t TimeLeft(uint32_t next_time)
+	{
+		uint32_t now = SDL_GetTicks();
+
+		if (next_time <= now)
+			return 0;
+		else
+			return next_time - now;
+	}
 
 	inline float GetDisplayRatio(void) const
 	{

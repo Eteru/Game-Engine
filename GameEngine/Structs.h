@@ -76,6 +76,16 @@ struct BoundingBox
 		: bb_min(min_p), bb_max(max_p)
 	{}
 
+	inline bool Contains(const glm::vec3 & point) const
+	{
+		if (glm::all(glm::lessThan(bb_min, point)) &&
+			glm::all(glm::greaterThan(bb_max, point))) {
+			return true;
+		}
+
+		return false;
+	}
+
 	inline bool Contains(const BoundingBox & rhs_bb) const
 	{
 		if (glm::all(glm::lessThan(bb_min, rhs_bb.bb_min)) &&

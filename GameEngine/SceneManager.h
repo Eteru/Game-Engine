@@ -20,6 +20,7 @@ public:
 	bool Init(std::string filepath);
 	void Update();
 	void Draw();
+	bool CheckPointCollision(const glm::vec3 & point);
 
 	inline Camera *GetActiveCamera()
 	{

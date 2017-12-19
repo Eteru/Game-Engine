@@ -43,3 +43,13 @@ void SceneObject::Draw()
 
 	m_model->Draw();
 }
+
+bool SceneObject::CheckCollision(const SceneObject *obj) const
+{
+	BoundingBox bb = m_model->GetBoundingBox();
+	BoundingBox rhs_bb = obj->GetBoundingBox();
+
+	return !(bb.bb_max.x < rhs_bb.bb_min.x || rhs_bb.bb_max.x < bb.bb_min.x ||
+		bb.bb_max.y < rhs_bb.bb_min.y || rhs_bb.bb_max.y < rhs_bb.bb_min.y ||
+		bb.bb_max.z < rhs_bb.bb_min.z || rhs_bb.bb_max.z < rhs_bb.bb_min.z);
+}

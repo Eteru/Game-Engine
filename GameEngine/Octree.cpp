@@ -97,9 +97,14 @@ void Octree::DrawNodeGL(const OctreeNode * node, const glm::mat4 & M, const glm:
 	glBindVertexArray(0);
 }
 
-void Octree::DrawContainedObjetcs(const Frustrum & frustrum) const
+void Octree::DrawContainedObjects(const Frustrum & frustrum) const
 {
 	m_root->Draw(frustrum, false);
+}
+
+bool Octree::CheckCameraCollision(const glm::vec3 & point) const
+{
+	return m_root->IsInside(point);
 }
 
 

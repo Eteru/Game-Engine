@@ -267,9 +267,6 @@ bool SceneManager::Init(std::string filepath)
 			color.z = std::stof(pColor->first_node("b")->value());
 		}
 
-		// TODO: TRAJECTORY
-		// TODO: LIGHTS
-
 		SceneObject *object = nullptr;
 
 		object = new SceneObject(pos, rot, scale);
@@ -282,14 +279,11 @@ bool SceneManager::Init(std::string filepath)
 		m_objects[id] = std::shared_ptr<SceneObject>(object);
 		m_octree->Insert(object);
 	}
-	//ambiental light
-	//lights
-	//debug settings
 
 	delete string;
 
-	glClearColor(m_background_color.x, m_background_color.y, m_background_color.z, 0.f);
-	glEnable(GL_DEPTH_TEST);
+	//glClearColor(m_background_color.x, m_background_color.y, m_background_color.z, 0.f);
+	//glEnable(GL_DEPTH_TEST);
 
 	return true;
 }
@@ -302,7 +296,12 @@ void SceneManager::Draw()
 {
 	Camera *cam = GetActiveCamera();
 	m_octree->Draw(cam->GetViewMatrix(), cam->GetProjectionMatrix());
-	m_octree->DrawContainedObjetcs(cam->GetFrustrum());
+	m_octree->DrawContainedObjects(cam->GetFrustrum());
 
 	cam->GetFrustrum().Draw(cam->GetViewMatrix(), cam->GetProjectionMatrix());
+}
+
+bool SceneManager::CheckPointCollision(const glm::vec3 & point)
+{
+	return m_octree->CheckCameraCollision(point);
 }

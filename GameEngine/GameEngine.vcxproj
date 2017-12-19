@@ -164,11 +164,11 @@
     <ClInclude Include="transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\scripts\script.py" />
     <None Include="res\basic_shader.fs" />
     <None Include="res\basic_shader.vs" />
     <None Include="res\scene_shader.fs" />
     <None Include="res\scene_shader.vs" />
-    <None Include="res\scripts\script.py" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="resources\xmls\resourceManager.xml" />

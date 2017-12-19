@@ -91,8 +91,18 @@ void OctreeNode::InitGL()
 
 void OctreeNode::DrawObjects()
 {
-	for (SceneObject *obj : m_objects) {
-		obj->Draw();
+	for (SceneObject *obj1 : m_objects) {
+		for (SceneObject *obj2 : m_objects) {
+			if (obj1 == obj2) {
+				continue;
+			}
+
+			if (true == obj1->CheckCollision(obj2)) {
+				std::cout << "collision detected" << std::endl;
+			}
+		}
+
+		obj1->Draw();
 	}
 }
 
@@ -126,4 +136,29 @@ void OctreeNode::Draw(const Frustrum & frustrum, bool draw)
 			}
 		}
 	}
+}
+
+bool OctreeNode::IsInside(const glm::vec3 & point) const
+{
+	for (size_t i = 0; i < m_children_bbs.size(); ++i) {
+		if (true == m_children_bbs[i].Contains(point)) {
+			if (nullptr == m_children[i]) {
+				// this means no objects are available deeper
+				break;
+			}
+
+			return m_children[i]->IsInside(point);
+		}
+	}
+
+	// If it got here it means that we should check collision with this child objects
+	for (const SceneObject *obj : m_objects) {
+		BoundingBox bb = obj->GetBoundingBox();
+		if (true == bb.Contains(point)) {
+			std::cout << "Point collision detected\n";
+			return true;
+		}
+	}
+
+	return false;
 }

@@ -16,7 +16,8 @@ public:
 	ScriptingModule(const std::string & filename);
 	virtual ~ScriptingModule();
 
-	std::string GetWelcomeMessage(const std::string & fname);
+	std::string GetWelcomeMessage();
+	std::string GetCollisionMessage(float x, float y, float z);
 
 private:
 	PyObject *m_name;

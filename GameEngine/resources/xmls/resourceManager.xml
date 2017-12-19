@@ -18,7 +18,7 @@
 	</shaders>
 	<textures>
 		<texture id="1" type="2d">
-			<path>resources/texturesources/bricks.jpg</path>			
+			<path>resources/textures/bricks.jpg</path>			
 			<min_filter>LINEAR</min_filter>
 			<mag_filter>LINEAR</mag_filter>
 			<wrap_s>CLAMP_TO_EDGE</wrap_s>

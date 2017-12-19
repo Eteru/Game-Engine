@@ -321,6 +321,18 @@ public:
 			.withCallback([](int result) { cout << "Dialog result: " << result << endl; });
 	}
 
+	void MessageBoxAlert(const std::string & title, const std::string & msg)
+	{
+		static bool prevent = false;
+
+		if (false == prevent) {
+			prevent = true;
+
+			add<MessageDialog>(MessageDialog::Type::Information, title, msg)
+				.withCallback([&](int) { prevent = false; });
+		}
+	}
+
 private:
 	nanogui::ProgressBar *mProgress;
 };

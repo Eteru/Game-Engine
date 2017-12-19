@@ -18,6 +18,8 @@ public:
 
 	void Draw();
 
+	bool CheckCollision(const SceneObject *obj) const;
+
 
 	inline Transform & GetTransform()
 	{

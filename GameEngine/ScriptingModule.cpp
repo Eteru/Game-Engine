@@ -27,15 +27,46 @@ ScriptingModule::~ScriptingModule()
 	Py_Finalize();
 }
 
-std::string ScriptingModule::GetWelcomeMessage(const std::string & fname)
+std::string ScriptingModule::GetWelcomeMessage()
 {
 	std::string ret = "";
-	PyObject *func = PyDict_GetItemString(m_dictionary, fname.c_str());
+	PyObject *func = PyDict_GetItemString(m_dictionary, "welcome_message");
 
 	if (PyCallable_Check(func)) {
 		PyObject *args = PyTuple_New(1);
 		PyObject *arg_name = PyString_FromString("<name>");
 		PyTuple_SetItem(args, 0, arg_name);
+
+		PyObject *value = PyObject_CallObject(func, args);
+		ret = PyString_AsString(value);
+
+		if (nullptr != args) {
+			Py_DECREF(args);
+		}
+		if (nullptr != value) {
+			Py_DECREF(value);
+		}
+	}
+	else {
+		PyErr_Print();
+	}
+
+	return ret;
+}
+
+std::string ScriptingModule::GetCollisionMessage(float x, float y, float z)
+{
+	std::string ret = "";
+	PyObject *func = PyDict_GetItemString(m_dictionary, "collision_message");
+
+	if (PyCallable_Check(func)) {
+		PyObject *args = PyTuple_New(3);
+		PyObject *arg1 = PyFloat_FromDouble(x);
+		PyObject *arg2 = PyFloat_FromDouble(y);
+		PyObject *arg3 = PyFloat_FromDouble(z);
+		PyTuple_SetItem(args, 0, arg1);
+		PyTuple_SetItem(args, 1, arg2);
+		PyTuple_SetItem(args, 2, arg3);
 
 		PyObject *value = PyObject_CallObject(func, args);
 		ret = PyString_AsString(value);
