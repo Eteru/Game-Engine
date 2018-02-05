@@ -4,6 +4,9 @@
 		<model id="1">
 			<path>resources/objects/monkey.obj</path>
 		</model>
+    <model id="2">
+      <path>resources/objects/sphere.obj</path>
+    </model>
 	</models>
 	<shaders>
 		<shader id="1" type="0">

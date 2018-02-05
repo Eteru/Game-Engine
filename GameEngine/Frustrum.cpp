@@ -95,7 +95,7 @@ Frustrum::ObjectLocation Frustrum::Contains(const BoundingBox & bb) const
 
 void Frustrum::Draw(const glm::mat4 & V, const glm::mat4 & P)
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	/*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDisable(GL_CULL_FACE);
 	m_shader->Bind();
 	m_shader->Update(glm::scale(glm::vec3(.5f)), V, P);
@@ -108,5 +108,5 @@ void Frustrum::Draw(const glm::mat4 & V, const glm::mat4 & P)
 	glBindVertexArray(0);
 
 	glEnable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);*/
 }

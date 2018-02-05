@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <queue>
 #include <SDL2\SDL.h>
 
 #include "camera.h"
@@ -70,6 +71,8 @@ private:
 	Camera *m_camera;
 	glm::vec4 m_background_color;
 	KeyTimePress m_key_time_pressed;
+
+	std::queue<glm::vec3> m_collision_queue;
 
 	void ParseKeyPress(SDL_Keysym key);
 	void ParseKeyPressRelease();

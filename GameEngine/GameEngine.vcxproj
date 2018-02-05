@@ -173,6 +173,7 @@
   <ItemGroup>
     <Xml Include="resources\xmls\resourceManager.xml" />
     <Xml Include="resources\xmls\sceneManager.xml" />
+    <Xml Include="resources\xmls\sceneManager2.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -27,6 +27,11 @@ public:
 		return m_cameras[m_active_camera].get();
 	}
 
+	inline glm::vec3 GetBackgroundColor() const
+	{
+		return m_background_color;
+	}
+
 private:
 	static SceneManager *m_instance;
 

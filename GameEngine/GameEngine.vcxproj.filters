@@ -165,5 +165,8 @@
     <Xml Include="resources\xmls\sceneManager.xml">
       <Filter>Resources</Filter>
     </Xml>
+    <Xml Include="resources\xmls\sceneManager2.xml">
+      <Filter>Resources</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

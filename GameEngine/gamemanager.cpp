@@ -49,7 +49,7 @@ GameManager::GameManager(int width, int height, const std::string & title)
 	rm->Init("./resources/xmls/resourceManager.xml");
 
 	SceneManager *sm = SceneManager::GetInstance();
-	sm->Init("./resources/xmls/sceneManager.xml");
+	sm->Init("./resources/xmls/sceneManager2.xml");
 
 	m_camera = sm->GetActiveCamera();
 
@@ -81,7 +81,15 @@ void GameManager::Run(void)
 	uint32_t next_time = SDL_GetTicks() + TICK_INTERVAL;
 
 	while (false == m_windowClosed) {
+		ParseInput();
 		Update();
+
+		while (false == m_collision_queue.empty()) {
+			glm::vec3 point = m_collision_queue.front();
+			m_gui->MessageBoxAlert("Collision detected", m_scripts->GetCollisionMessage(point.x, point.y, point.z));
+			m_collision_queue.pop();
+		}
+
 		Draw();
 
 		SDL_GL_SwapWindow(m_window);
@@ -92,7 +100,8 @@ void GameManager::Run(void)
 
 void GameManager::Draw(void)
 {
-	Clear(m_background_color.r, m_background_color.g, m_background_color.b, m_background_color.a);
+	glm::vec3 bkg = SceneManager::GetInstance()->GetBackgroundColor();
+	Clear(bkg.r, bkg.g, bkg.b, 1.f);
 
 	SceneManager::GetInstance()->Draw();
 	m_gui->drawAll();
@@ -101,12 +110,11 @@ void GameManager::Draw(void)
 
 void GameManager::Update(void)
 {
-	ParseInput();
 	SceneManager::GetInstance()->Update();
 
 	const glm::vec3 & point = SceneManager::GetInstance()->GetActiveCamera()->GetPosition();
 	if (true == SceneManager::GetInstance()->CheckPointCollision(point)) {
-		m_gui->MessageBoxAlert("Collision detected", m_scripts->GetCollisionMessage(point.x, point.y, point.z));
+		m_collision_queue.push(point);
 	}
 }
 
